@@ -1,5 +1,5 @@
 import streamlit as st
-imageaddress = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAb7MGqnR-lSnIMuqLaO_sM1n1GMRWosIvbx_HmWfewg&s=10'
+imageaddress = 'images.jpg'
 st.title('Predicting Stomach Adenocarcinoma TMB Status')
 
 st.image(
