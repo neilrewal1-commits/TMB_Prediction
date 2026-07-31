@@ -21,7 +21,7 @@ def load_model(model_path):
 
 
 
-MODEL_PATH = "stomach_adenocarcinoma_tmb_best_lr_model_updated"
+MODEL_PATH = "Best_Model_RF_50Trees_7Depth (1)"
 
 LABELS = {
     0: "Low TMB",
