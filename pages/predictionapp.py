@@ -3,10 +3,12 @@ import pickle
 import pandas as pd
 import streamlit as st
 
+
 # Require user authentication
 if not st.user.is_logged_in:
     st.error("Please log in to access the app.")
     st.stop()
+
 
 @st.cache_resource
 def load_model(model_path):
@@ -16,15 +18,21 @@ def load_model(model_path):
 
     return model
 
-MODEL_PATH = 'Best_Model_RF_50Trees_7Depth (1)'
+
+
+
+MODEL_PATH = "stomach_adenocarcinoma_tmb_best_lr_model_updated"
 
 LABELS = {
     0: "Low TMB",
     1: "High TMB",
 }
 
-st.title('Predicting Stomach Adenocarcinoma TMB Status')
-st.subheader("Upload Gene Mutation Features")   
+
+
+st.title("Stomach Adenocarcinoma TMB Classification")
+
+st.subheader("Upload Gene Mutation Features")
 
 uploaded_file = st.file_uploader(
     "Upload a CSV file containing the gene features",
@@ -34,7 +42,8 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is None:
     st.info("Upload a CSV file to get started.")
-else:
+else:    
+
     try:
         dataframe = pd.read_csv(uploaded_file)
 
@@ -44,16 +53,19 @@ else:
         UnicodeDecodeError,
     ) as error:
         st.error(f"The file could not be read as a CSV: {error}")
-    #proceed only if read csv works    
+        
+
     if dataframe.empty:
         st.error("The uploaded CSV file does not contain any data.")
         
+
     st.subheader("Data Preview")
     st.dataframe(
         dataframe,
         use_container_width=True,
         hide_index=True,
     )
+
     try:
         with st.spinner("Processing..."):
             classification_model = load_model(MODEL_PATH)
@@ -69,8 +81,8 @@ else:
         if len(predictions) == 1:
             prediction = int(predictions[0])
             st.success(f"Prediction: {LABELS.get(prediction, 'Unknown')}")
-       
-        else:             
+
+        else:
             st.success(
                 f"Successfully classified {len(predictions)} samples."
             )
@@ -83,7 +95,7 @@ else:
             )
 
     except FileNotFoundError:
-            st.error(f"Model file not found: {MODEL_PATH}")
+        st.error(f"Model file not found: {MODEL_PATH}")
 
     except ValueError as error:
         st.error(
@@ -93,9 +105,5 @@ else:
 
     except Exception as error:
         st.error(f"An unexpected error occurred: {error}")
-        
-        
-        
-        
-     
-    
+
+
