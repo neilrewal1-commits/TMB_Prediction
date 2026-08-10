@@ -21,7 +21,7 @@ def load_model(model_path):
 
 
 
-MODEL_PATH = "Best_Model_RF_50Trees_7Depth (1)"
+MODEL_PATH = "Best_Model_RF_50Trees_7Depth"
 
 LABELS = {
     0: "Low TMB",
