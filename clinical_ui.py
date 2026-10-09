@@ -7,12 +7,15 @@ import streamlit as st
 from clinical_rules import DEPTHS, VERSION, NCI, derive_components, stage_group, treatment_pathways
 
 def clinical_panel(case, simulated_mode):
-    st.subheader('Staging & personalized treatment pathways')
-    st.warning('EXPERIMENTAL · Clinician review required. This calculator derives a stage group from confirmed inputs; it does not independently interpret pathology or scans. Treatment outputs are matched discussion options, not prescriptions.')
-    st.caption('First implemented module: gastric adenocarcinoma, AJCC 8 pathological staging without neoadjuvant therapy. Other cancers, clinical cTNM and post-treatment ypTNM need separate rules.')
+    st.subheader('Connect the findings to stage & care')
+    st.caption('EXPERIMENTAL CALCULATION · TREATMENT DISCUSSION PATHWAYS')
+    st.write('Explore how confirmed disease findings and patient context change the stage calculation and treatment pathways shown.')
+    with st.expander('Assessment scope & how it works'):
+        st.write('First module: gastric adenocarcinoma, AJCC 8 pathological staging without neoadjuvant therapy. It calculates from reviewed inputs; it does not interpret scan pixels. Other cancers, cTNM and ypTNM require separate rules.')
+        st.write('Treatment matches are discussion options for clinician review, not prescriptions. Coverage is partial. The inputs below are reviewed separately from the uploaded report profile.')
     if simulated_mode:
-        st.info('The clinical assessment below is an independent fictional scenario. It does not restage or recommend treatment for the historical TCGA individual.')
-        if st.button('Load fictional clinical scenario',key='clinical_demo'):
+        st.caption('SIMULATED CLINICAL SCENARIO · Separate from the historical TCGA patient')
+        if st.button('Load demo clinical scenario',key='clinical_demo',type='primary'):
             i=['TCGA-VQ-A8DL','TCGA-VQ-A8DU','TCGA-VQ-A8DZ'].index(case['id'])
             values={'site':'Gastric adenocarcinoma','basis':'Pathological','edition':'AJCC 8','neoadjuvant':'No',
                 'depth':['Subserosa without serosal or adjacent-organ invasion','Serosa','Subserosa without serosal or adjacent-organ invasion'][i],
@@ -24,46 +27,49 @@ def clinical_panel(case, simulated_mode):
                 'cps':None if i<2 else 5.0,'cldn':'Unknown','msi':'Unknown','symptoms':'No',
                 'same_episode':True,'source':'FICTIONAL scenario '+['A','B','C'][i]+': all clinical assessment inputs are invented for demonstration, including fitness review. No clinician has reviewed this scenario.'}
             for key,value in values.items():st.session_state['clinical_'+key]=value
-    def select(label,key,options):return st.selectbox(label,options,key='clinical_'+key)
-    st.markdown('**1. Confirm the staging system and pathology findings**')
-    left,right=st.columns(2)
-    with left:
-        site=select('Confirmed cancer / staging schema','site',['Unknown','Gastric adenocarcinoma','Other / GEJ schema unresolved'])
-        basis=select('Assessment basis','basis',['Unknown','Pathological','Clinical','Post-neoadjuvant'])
-        edition=select('Edition used for this assessment','edition',['Unknown','AJCC 8','AJCC 7','Other'])
-        neo=select('Treatment before the staging operation','neoadjuvant',['Unknown','No','Yes'])
-    with right:
-        depth=select('Deepest confirmed pathological invasion','depth',['Unknown']+list(DEPTHS))
-        positive=st.number_input('Positive regional nodes',key='clinical_positive',value=None,min_value=0,max_value=500,step=1)
-        examined=st.number_input('Examined regional nodes',key='clinical_examined',value=None,min_value=0,max_value=500,step=1)
-        m=select('Confirmed distant metastasis category','m',['Unknown / indeterminate','M0','M1'])
-    st.caption('Tumor diameter alone cannot supply invasion depth. An indeterminate imaging finding cannot establish M1. Node counts must come from pathology, not enlarged-node counts on CT.')
-    st.markdown('**2. Confirm the current treatment context**')
-    left,right=st.columns(2)
-    with left:
-        age=st.number_input('Age at this assessment (years)',key='clinical_age',value=None,min_value=0,max_value=120,step=1)
-        setting=select('Current treatment setting','setting',['Unknown','After surgery','Before surgery — resectable','Advanced — first line','Advanced — later line'])
-        metastatic=select('Distant metastasis at this treatment assessment','metastatic',['Unknown','No','Yes'])
-        unresectable=select('Locally advanced and unresectable','unresectable',['Unknown','No','Yes'])
-        prior=select('Previous systemic treatment for this advanced-disease episode','prior_advanced',['Unknown','No','Yes'])
-        prior_episode=select('Any previous cancer treatment in this assessment episode (including surgery)','prior_episode',['Unknown','No','Yes'])
-        fitness=select('Clinical fitness / organ-function review','fitness',['Unknown','Reviewed for combination therapy','Needs specialist assessment'])
-        immune=select('Immunotherapy risk review','immune_review',['Unknown','Reviewed — no flagged concern','Concern present — specialist review needed'])
-    with right:
-        her2=select('Confirmed HER2 result','her2',['Unknown','Positive','Negative'])
-        cps=st.number_input('PD-L1 CPS (leave blank if unknown)',key='clinical_cps',value=None,min_value=0.0,max_value=100.0,step=1.0)
-        cldn=select('CLDN18.2 result using the relevant companion assay','cldn',['Unknown','Positive','Negative'])
-        msi=select('MSI / mismatch repair result','msi',['Unknown','MSI-high / dMMR','MSS / pMMR'])
-        symptoms=select('Symptoms needing local control: bleeding, pain or obstruction','symptoms',['Unknown','No','Yes'])
-        st.caption('Weight, albumin and NLR remain in the report profile. They do not substitute for fitness review, drug-specific checks or measured biomarkers.')
-    source=st.text_area('Source reports, dates and assessment context',key='clinical_source',placeholder='Identify the relevant report pages and assessment date. For a simulation, explicitly say fictional.')
-    same=st.checkbox('These assessment inputs refer to one episode; any historical or recurrent disease has been reconciled.',key='clinical_same_episode')
-    profile={'site':site,'age':age,'setting':setting,'fitness':fitness,'immune_review':immune,'metastatic':metastatic,'unresectable':unresectable,'prior_advanced':prior,'prior_episode':prior_episode,'her2':her2,'cps':cps,'cldn':cldn,'msi':msi,'symptoms':symptoms,'same_episode':same}
-    staging_inputs={'depth':depth,'positive':positive,'examined':examined,'m':m,'basis':basis,'edition':edition,'neoadjuvant':neo}
-    fingerprint=hashlib.sha256(json.dumps([profile,staging_inputs,source,simulated_mode],sort_keys=True).encode()).hexdigest()
+    with st.expander('Review or edit the assessment inputs', expanded=not simulated_mode):
+        def select(label,key,options):return st.selectbox(label,options,key='clinical_'+key)
+        st.markdown('**1. Confirm the staging system and pathology findings**')
+        left,right=st.columns(2)
+        with left:
+            site=select('Confirmed cancer / staging schema','site',['Unknown','Gastric adenocarcinoma','Other / GEJ schema unresolved'])
+            basis=select('Assessment basis','basis',['Unknown','Pathological','Clinical','Post-neoadjuvant'])
+            edition=select('Edition used for this assessment','edition',['Unknown','AJCC 8','AJCC 7','Other'])
+            neo=select('Treatment before the staging operation','neoadjuvant',['Unknown','No','Yes'])
+        with right:
+            depth=select('Deepest confirmed pathological invasion','depth',['Unknown']+list(DEPTHS))
+            positive=st.number_input('Positive regional nodes',key='clinical_positive',value=None,min_value=0,max_value=500,step=1)
+            examined=st.number_input('Examined regional nodes',key='clinical_examined',value=None,min_value=0,max_value=500,step=1)
+            m=select('Confirmed distant metastasis category','m',['Unknown / indeterminate','M0','M1'])
+        st.caption('Tumor diameter alone cannot supply invasion depth. An indeterminate imaging finding cannot establish M1. Node counts must come from pathology, not enlarged-node counts on CT.')
+        st.markdown('**2. Confirm the current treatment context**')
+        left,right=st.columns(2)
+        with left:
+            age=st.number_input('Age at this assessment (years)',key='clinical_age',value=None,min_value=0,max_value=120,step=1)
+            setting=select('Current treatment setting','setting',['Unknown','After surgery','Before surgery — resectable','Advanced — first line','Advanced — later line'])
+            metastatic=select('Distant metastasis at this treatment assessment','metastatic',['Unknown','No','Yes'])
+            unresectable=select('Locally advanced and unresectable','unresectable',['Unknown','No','Yes'])
+            prior=select('Previous systemic treatment for this advanced-disease episode','prior_advanced',['Unknown','No','Yes'])
+            prior_episode=select('Any previous cancer treatment in this assessment episode (including surgery)','prior_episode',['Unknown','No','Yes'])
+            fitness=select('Clinical fitness / organ-function review','fitness',['Unknown','Reviewed for combination therapy','Needs specialist assessment'])
+            immune=select('Immunotherapy risk review','immune_review',['Unknown','Reviewed — no flagged concern','Concern present — specialist review needed'])
+        with right:
+            her2=select('Confirmed HER2 result','her2',['Unknown','Positive','Negative'])
+            cps=st.number_input('PD-L1 CPS (leave blank if unknown)',key='clinical_cps',value=None,min_value=0.0,max_value=100.0,step=1.0)
+            cldn=select('CLDN18.2 result using the relevant companion assay','cldn',['Unknown','Positive','Negative'])
+            msi=select('MSI / mismatch repair result','msi',['Unknown','MSI-high / dMMR','MSS / pMMR'])
+            symptoms=select('Symptoms needing local control: bleeding, pain or obstruction','symptoms',['Unknown','No','Yes'])
+            st.caption('Weight, albumin and NLR remain in the report profile. They do not substitute for fitness review, drug-specific checks or measured biomarkers.')
+        source=st.text_area('Source reports, dates and assessment context',key='clinical_source',placeholder='Identify the relevant report pages and assessment date. For a simulation, explicitly say fictional.')
+        same=st.checkbox('These assessment inputs refer to one episode; any historical or recurrent disease has been reconciled.',key='clinical_same_episode')
+        profile={'site':site,'age':age,'setting':setting,'fitness':fitness,'immune_review':immune,'metastatic':metastatic,'unresectable':unresectable,'prior_advanced':prior,'prior_episode':prior_episode,'her2':her2,'cps':cps,'cldn':cldn,'msi':msi,'symptoms':symptoms,'same_episode':same}
+        staging_inputs={'depth':depth,'positive':positive,'examined':examined,'m':m,'basis':basis,'edition':edition,'neoadjuvant':neo}
+        fingerprint=hashlib.sha256(json.dumps([profile,staging_inputs,source,simulated_mode],sort_keys=True).encode()).hexdigest()
     confirmed=st.checkbox('I reviewed the supporting sources and understand the experimental scope of these calculations.',key='clinical_confirm_'+fingerprint)
     st.session_state.clinical_result=None
-    if not confirmed:return
+    if not confirmed:
+        st.caption('To see the result: load a demo scenario (or enter findings), review the assessment inputs, then confirm above.')
+        return
     if not source.strip():st.error('Identify the source and assessment context before calculating.');return
     if not simulated_mode and any(x in source.lower() for x in ['fictional','simulated','synthetic']):
         st.error('Use simulated-extension mode for fictional assessments.');return
@@ -85,7 +91,7 @@ def clinical_panel(case, simulated_mode):
         treatment['cards']=[];treatment['blockers'].append('Resolve the contradictory metastasis inputs before matching treatment pathways.')
     if stage['stage']:
         st.success('Calculated stage group: '+stage['stage']+' · '+stage['tnm']+' · AJCC 8 pathological')
-        st.caption('Derived from the confirmed invasion depth, node count and M category, independently of the historical stage label. This is rules-based calculation, not clinical validation.')
+        st.caption('Why this stage: confirmed invasion depth + regional nodes + distant metastasis category. Calculated independently of the historical stage label.')
     for blocker in stage['blockers']:st.warning('Staging: '+blocker)
     if examined:st.caption('The team must review lymph-node sampling adequacy; a calculated group is not proof of adequate staging.')
     st.link_button('Review staging evidence',NCI)

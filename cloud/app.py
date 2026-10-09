@@ -1,4 +1,4 @@
-"""Community Cloud entry point. Appearance release: dark theme, 2026-10-09."""
+"""Community Cloud entry point. Experience release: patient journeys and research story, v0.4."""
 from pathlib import Path
 import runpy
 import sys

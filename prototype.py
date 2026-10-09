@@ -10,15 +10,21 @@ from prototype_core import (ROOT, GENES, FIELDS, genomic_csv, inspect_report,
                             current_facts, commit_report, loris_readiness, export_summary)
 from clinical_ui import clinical_panel
 
-st.set_page_config(page_title='Cancer Care | Research Prototype', page_icon='◈', layout='wide')
+st.set_page_config(page_title='Cancer Care | From research to possibility', page_icon='◈', layout='wide')
 st.markdown('''<style>
-div[data-testid="stMetric"] {background:rgba(128,128,128,0.06);padding:16px;border-radius:10px;border:1px solid rgba(128,128,128,0.28);}
 .block-container {max-width:1200px;padding-top:2rem;}
+.hero {padding:2rem;border:1px solid #33586b;border-radius:22px;background:linear-gradient(120deg,#102b40,#132238 65%,#183e43);color:#edf7fc;margin-bottom:1.5rem;}
+.hero .eyebrow {color:#77e5d4;font-size:.78rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;}
+.hero h1 {color:#f4f8fc !important;font-size:2.65rem;line-height:1.12;margin:.6rem 0;max-width:800px;}
+.hero p {color:#cbdce7;max-width:760px;font-size:1.05rem;}
+.hero .pill {display:inline-block;padding:.35rem .7rem;border:1px solid #456170;border-radius:30px;font-size:.76rem;color:#cbdce7;margin-top:.5rem;}
+div[data-testid="stMetric"] {background:rgba(128,128,128,.06);padding:16px;border-radius:14px;border:1px solid rgba(128,128,128,.28);}
+button[role="tab"] {min-height:48px;}
 @media (max-width:640px) {
- .block-container {padding-left:1rem;padding-right:1rem;padding-top:1.5rem;}
- h1 {font-size:1.9rem !important;}
+ .block-container {padding:1rem;}
+ .hero {padding:1.25rem;border-radius:16px;}
+ .hero h1 {font-size:2rem !important;}
  div[data-testid="stMetric"] {padding:10px;}
- button[role="tab"] {min-height:44px;}
 }
 </style>''', unsafe_allow_html=True)
 CASES = json.loads((ROOT/'demo_data'/'cases.json').read_text())
@@ -44,51 +50,75 @@ def append_document(doc):
     st.session_state.history.append({'source':doc['filename'],'changes':changes})
 
 with st.sidebar:
-    st.title('Cancer Care')
-    st.caption('RESEARCH PROTOTYPE · VERSION 0.3')
-    st.button('Reset this workspace', on_click=reset_case, width='stretch')
-    st.divider()
-    st.markdown('**About this version**')
-    st.caption('Upload public research or simulated records only. Files are processed in this app session, with no external AI service. This build is not prepared to accept private clinical records.')
-    st.link_button('Original TMB research app', 'https://tmbprediction-vmbvabws9cd5mbng4gftvp.streamlit.app/predictionapp')
+    st.title('◈ Cancer Care')
+    st.caption('BY NEIL REWAL · DEMO 0.4')
+    st.markdown('**From one research question to a connected care vision.**')
+    st.write('Start with the genes. Add the reports. Explore the bigger picture.')
+    st.button('Start over', on_click=reset_case, width='stretch')
+    with st.expander('About the evidence'):
+        st.write('Research prototype—not for clinical use. The first clinical module covers gastric cancer; the broader vision extends beyond it.')
+        st.write('TCGA/GDC supplies public mutation and clinical data. Original matched radiology and blood reports were not located; demo extensions are explicitly simulated. Clinical scenarios are separate from the historical patients.')
+        st.write('The TMB classifier predicts the study category, not clinical mutations per megabase. These cases may overlap model development data. Staging and care pathways are experimental rules, with partial coverage.')
+        st.write('Use public or simulated files only. This deployment is not prepared for private medical records. Files are processed in the app session without an external AI service.')
+    st.link_button('Explore the original TMB app', 'https://tmbprediction-vmbvabws9cd5mbng4gftvp.streamlit.app/predictionapp')
 
-st.title('See how the reports connect')
-st.write('Add genomic information, imaging and pathology, then labs and history. Review each source before it enters the combined view.')
-selection = st.selectbox('Explore a patient', range(len(CASES)),
-                        format_func=lambda i:CASES[i]['label'], key='case_selector', on_change=reset_case)
-mode = st.radio('Evidence mode', [PUBLIC,SIMULATED], key='mode_selector', on_change=reset_case)
-st.caption('Switching patient or mode clears this workspace. On a phone, swipe the tab row to see every step.')
-with st.expander('Start the three-minute demo'):
-    st.write('1. Choose a patient and the explicitly simulated extension mode.')
-    st.write('2. In Genomics, load the example CSV, confirm it and run the model.')
-    st.write('3. In Imaging and Labs, load an example, check the source and add the confirmed report.')
-    st.write('4. In Stage & care, load the separate fictional clinical scenario, review its inputs and confirm the calculation.')
-    st.write('5. Use Summary to review the sources and download the results. Fictional scenarios remain separate from the historical patient record.')
+st.markdown('''<section class="hero">
+<div class="eyebrow">Neil Rewal · Congressional App Challenge prototype</div>
+<h1>Three reports.<br>One connected picture of cancer care.</h1>
+<p>A vision built from original TMB research, public cancer data and an exploration of published tools: connect the genes, the scans and the clinical context.</p>
+<span class="pill">Research prototype · Not for clinical use</span>
+</section>''', unsafe_allow_html=True)
+st.subheader('Choose a patient journey')
+st.caption('Three public research cases. Three opportunities to see how additional information changes the picture.')
+
+def choose_patient(index):
+    st.session_state.case_selector=index
+    reset_case()
+
+selection=st.session_state.setdefault('case_selector',0)
+for i,col in enumerate(st.columns(3)):
+    with col, st.container(border=True):
+        st.markdown('### Patient '+['A','B','C'][i])
+        st.write(str(CASES[i]['age'])+' years · Stomach cancer')
+        st.caption(CASES[i]['historical_stage']+' in the historical record')
+        st.button('Exploring this journey' if i==selection else 'Explore patient '+['A','B','C'][i],
+                  key='journey_'+str(i),on_click=choose_patient,args=(i,),
+                  type='primary' if i==selection else 'secondary',width='stretch')
+mode = st.radio('Choose the experience', [SIMULATED,PUBLIC],
+    format_func=lambda value:'Full demo · includes simulated reports' if value==SIMULATED else 'Public records only',
+    key='mode_selector',on_change=reset_case,horizontal=True)
 case = CASES[selection]
 for key, default in [('documents',[]),('history',[]),('latest_changes',[]),('genomic',None)]:
     if key not in st.session_state: st.session_state[key] = default
-
-st.caption(f"{case['id']} · {case['description']}")
-if mode == SIMULATED:
-    st.warning('SIMULATED EXTENSION: any added fictional imaging or lab values are demonstration inputs, not facts about this TCGA patient. This label remains in exports.')
-else:
-    st.info('Public research data. Original radiology reports and matched blood values have not been located. Unknown fields remain unknown.')
+st.caption('Public case: '+case['id']+' · Historical stage: AJCC 7'+
+           (' · Added radiology/labs and the separate clinical scenario are simulated.' if mode==SIMULATED else ' · Missing reports remain unfilled.'))
+with st.expander('Your 3-minute walkthrough'):
+    st.write('**1 · Genes:** load the public gene CSV, review it and run Neil’s TMB model.')
+    st.write('**2 · Imaging:** select a public clinical extract or a simulated radiology report; review and add it.')
+    st.write('**3 · Labs:** add the simulated blood/history report to reveal more patient context.')
+    st.write('**4 · Stage & care:** explore the separate fictional clinical scenario, review its inputs and see the reasoning behind matched pathways.')
+    st.write('**5 · The full picture:** revisit the findings, their sources and the remaining questions. Explore **The research** to see what powers the prototype.')
+    st.caption('Use Full demo for all steps. Changing patient or experience clears the workspace. On a phone, swipe the tab row.')
 
 facts, conflicts = current_facts(st.session_state.documents)
 cols = st.columns(3)
-cols[0].metric('1 · Genomics', 'Added' if st.session_state.genomic else 'Awaiting input')
-cols[1].metric('2 · Imaging / pathology', str(sum(d['stage']=='imaging' for d in st.session_state.documents))+' reports')
-cols[2].metric('3 · Labs / history', str(sum(d['stage']=='labs' for d in st.session_state.documents))+' reports')
-tabs = st.tabs(['1 Genomics','2 Imaging','3 Labs','Summary','4 Stage & care'])
+cols[0].metric('01 · Genomic signal', st.session_state.genomic['label'].replace(' study category','') if st.session_state.genomic else 'Not added')
+cols[1].metric('02 · Disease context', str(sum(d['stage']=='imaging' for d in st.session_state.documents))+' reports added')
+cols[2].metric('03 · Patient context', str(sum(d['stage']=='labs' for d in st.session_state.documents))+' reports added')
+completed=sum([bool(st.session_state.genomic),any(d['stage']=='imaging' for d in st.session_state.documents),any(d['stage']=='labs' for d in st.session_state.documents)])
+st.progress(completed/3,text=str(completed)+' of 3 evidence steps added')
+tabs = st.tabs(['1 · Genes','2 · Imaging','3 · Labs','4 · Stage & care','5 · The full picture','The research'])
 
 with tabs[0]:
-    st.subheader('Your TMB research model')
-    st.write('The original 50-gene random forest runs here. Its output is the study’s high/low mutation-burden category, not a clinical mutations-per-megabase measurement.')
+    st.subheader('Start with the genomic signal')
+    st.caption('ORIGINAL RESEARCH · 50-GENE TMB CLASSIFIER')
+    st.write('Run Neil’s original random-forest model on a public mutation profile to reveal its high/low study category. This is a research classification, not measured clinical TMB.')
     file = ROOT/'demo_data'/(case['id']+'_genes.csv')
     a,b = st.columns([1,1])
     with a:
-        st.download_button('Download this case’s gene CSV',file.read_bytes(),file.name,'text/csv')
-        use_example = st.button('Load this case’s gene CSV', key='load_genes')
+        use_example = st.button('Load example gene profile', key='load_genes',type='primary')
+        with st.expander('Get the example file'):
+            st.download_button('Download gene CSV',file.read_bytes(),file.name,'text/csv')
     with b:
         uploaded = st.file_uploader('Or upload a 50-gene CSV',type=['csv'],key='gene_upload')
     if use_example:
@@ -105,7 +135,8 @@ with tabs[0]:
         try:
             frame=genomic_csv(data,single_patient=True)
             st.caption(name+' · checked against the exact training gene list and reordered safely')
-            st.dataframe(frame,hide_index=True)
+            with st.expander('Review all 50 gene values'):
+                st.dataframe(frame,hide_index=True)
             confirmed=st.checkbox('I confirm this CSV belongs to the selected case and all 50 gene statuses are known.',key='gene_confirm_'+hashlib.sha256(data).hexdigest())
             if st.button('Run TMB model',disabled=not confirmed,type='primary',key='run_model'):
                 prediction=int(load_model().predict(frame.to_numpy())[0])
@@ -118,25 +149,30 @@ with tabs[0]:
     if st.session_state.genomic:
         st.success('Experimental result: '+st.session_state.genomic['label'])
         st.caption('Prediction source: '+st.session_state.genomic['source'])
-        st.caption('Current GDC mutation calls were mapped using the study variant categories. This conversion is experimental; these TCGA cases may overlap model development data.')
+        with st.expander('How this result was produced'):
+            st.write('Current GDC mutation calls were mapped to the study gene list and variant categories. The conversion is experimental, and these cases may overlap model development data.')
+        st.info('Next: add imaging or pathology to explore the disease context beyond the genomic signal.')
 
 
 def report_panel(stage):
     imaging=stage=='imaging'
-    st.subheader('Review what the report says')
-    st.caption('PDF text and TXT are supported. Automatic suggestions recognize labeled fields; they do not diagnose cancer or interpret scan pixels. Review the source and add missing fields explicitly.')
+    st.subheader('Add the disease context' if imaging else 'Add the person behind the reports')
+    st.write('Bring imaging and pathology findings into the picture.' if imaging else 'Connect blood results and health history with the other findings.')
+    st.caption('Upload public or simulated PDF/TXT reports. Review the suggested fields against the source; this step reads report text, not scan images.')
     example_names = [case['id']+'_clinical.txt'] if imaging else []
     if mode == SIMULATED:
         example_names += [case['id']+('_simulated_radiology.txt' if imaging else '_simulated_labs.txt')]
     if example_names:
-        example = st.selectbox('Example report',example_names,key=stage+'_example')
+        example = st.selectbox('Choose a report',example_names,key=stage+'_example',
+            format_func=lambda name:'Public clinical record' if name.endswith('_clinical.txt') else ('Simulated radiology report' if 'radiology' in name else 'Simulated blood & history report'))
         example_bytes=(ROOT/'demo_data'/example).read_bytes()
         a,b=st.columns(2)
-        a.download_button('Download example report',example_bytes,example,'text/plain',key=stage+'_download')
-        if b.button('Load example for review',key=stage+'_load'):
+        with b.expander('Get the example file'):
+            st.download_button('Download example report',example_bytes,example,'text/plain',key=stage+'_download')
+        if a.button('Load example report',key=stage+'_load',type='primary'):
             st.session_state[stage+'_candidate']=(example,example_bytes)
     elif not imaging:
-        st.info('No matched blood report has been established for this real case. Switch to simulated-extension mode to demonstrate a fictional lab upload.')
+        st.info('No matched public blood report is available. Choose Full demo above to explore a simulated report.')
     up=st.file_uploader('Upload '+('radiology / pathology report' if imaging else 'blood report / history'),type=['pdf','txt'],key=stage+'_upload')
     if up is not None:
         digest=hashlib.sha256(up.getvalue()).hexdigest()
@@ -144,7 +180,12 @@ def report_panel(stage):
             st.session_state[stage+'_candidate']=(up.name,up.getvalue())
             st.session_state[stage+'_upload_seen']=digest
     candidate=st.session_state.get(stage+'_candidate')
-    if not candidate:return
+    if not candidate:
+        added=[d for d in st.session_state.documents if d['stage']==stage]
+        if added:
+            st.success(str(len(added))+' report(s) connected to this patient picture.')
+            st.caption('Next: '+('add Labs for more patient context.' if imaging else 'explore Stage & care, then The full picture.'))
+        return
     name,data=candidate
     try:
         doc=inspect_report(data,name,case['id'],stage)
@@ -153,6 +194,7 @@ def report_panel(stage):
     except ValueError as exc:st.error(str(exc));return
     if data == (ROOT/'demo_data'/(case['id']+'_clinical.txt')).read_bytes():
         doc['provenance']='Reconstructed public clinical data (not an original report)'
+    st.caption('SIMULATED REPORT' if doc['simulated'] else 'PUBLIC / USER-SUPPLIED SOURCE · '+doc['provenance'])
     left,right=st.columns([1,1])
     with left:
         st.markdown('**Source text**')
@@ -193,10 +235,19 @@ def report_panel(stage):
 
 with tabs[1]: report_panel('imaging')
 with tabs[2]: report_panel('labs')
-with tabs[4]: clinical_panel(case, mode == SIMULATED)
+with tabs[3]: clinical_panel(case, mode == SIMULATED)
 
-with tabs[3]:
-    st.subheader('The combined picture')
+with tabs[4]:
+    st.subheader('One view. Every finding connected to its source.')
+    if st.session_state.genomic:
+        st.success('Genomic signal · '+st.session_state.genomic['label']+' · Experimental prediction')
+    assessment=st.session_state.get('clinical_result')
+    if assessment:
+        with st.container(border=True):
+            st.caption(assessment['provenance'])
+            st.markdown('**Clinical scenario · '+str(assessment['staging']['stage'] or 'Stage unresolved')+'**')
+            for card in assessment['treatment']['cards']:st.write('• '+card['title'])
+            st.caption('Experimental discussion pathways · See Stage & care for the inputs and reasoning.')
     facts,conflicts=current_facts(st.session_state.documents)
     if st.session_state.latest_changes:
         st.markdown('**What changed most recently**')
@@ -210,28 +261,29 @@ with tabs[3]:
             with st.expander(FIELDS[key]+': '+row['value'],expanded=key in ['diagnosis','stage']):
                 st.caption(f"{row['filename']} · page {row['page']} · {row['provenance']}")
                 st.text(row['excerpt'])
-        st.markdown('**Treatment discussion**')
+        st.markdown('**What each report contributes**')
         if 'diagnosis' in facts:
             st.write('A documented diagnosis is available. Histology, biomarkers, disease extent, prior treatment, general health, and patient preferences still need to be considered together.')
         if 'stage' in facts:
-            st.write('The recorded stage is '+facts['stage']['value']+'. Its source and staging edition matter; this app has not independently assigned or updated the stage.')
+            st.write('The historical recorded stage is '+facts['stage']['value']+'. Open Stage & care for a separate calculation from confirmed assessment inputs.')
         if 'imaging_findings' in facts:
             st.write('Imaging information has been added. Uncertain findings remain uncertain and do not automatically change the recorded stage.')
         if any(k in facts for k in ['albumin','nlr','other_conditions','treatment_history']):
-            st.write('Clinical context is now available for review. This version does not infer treatment suitability or drug doses from these values.')
-        st.markdown('Open **4 · Staging & treatment** to calculate a pathological stage from confirmed findings and match experimental treatment discussion options. That workspace requires explicit assessment inputs and keeps fictional scenarios separate from this report profile.')
+            st.write('Clinical context is now available alongside the genomic and disease findings.')
+        st.markdown('Explore **4 · Stage & care** to connect confirmed assessment inputs with a calculated pathological stage and matched treatment discussion pathways.')
         st.link_button('NCI: stomach cancer treatment by stage','https://www.cancer.gov/types/stomach/treatment/by-stage')
     with right:
         st.markdown('**What is still unknown**')
         for key in ['diagnosis','stage','staging_edition','imaging_findings','age','albumin','nlr','measured_tmb','prior_systemic']:
             if key not in facts:st.write('• '+FIELDS[key])
-        st.markdown('**LORIS research inputs**')
+        st.markdown('**Exploring LORIS · input readiness**')
+        st.caption('Published NCI research explored for a future response-prediction layer. This prototype checks inputs; it does not run LORIS.')
         readiness=loris_readiness(facts,conflicts)
         for item in readiness['missing']:st.caption('Missing: '+item)
         for item in readiness['errors']:st.warning(item)
         if readiness['fields_present']:st.success('The six input fields are populated. Cancer-category mapping and clinical suitability still need confirmation.')
-        st.info('No response percentage is issued. The published repository and web calculator use different coefficients; version selection and calibration are still under review.')
-        st.caption('Your experimental high/low TMB result cannot fill the measured-TMB field.')
+        with st.expander('Why no LORIS response score yet?'):
+            st.write('The published repository and web calculator use different coefficients; version selection and calibration need resolution before integration. The high/low TMB study category cannot substitute for measured TMB.')
         st.link_button('View NCI LORIS research tool','https://loris.ccr.cancer.gov/')
     st.divider()
     st.download_button('Download appointment / research summary',export_summary(case,mode,st.session_state.genomic,st.session_state.documents,st.session_state.get('clinical_result')),case['id']+'_summary.txt','text/plain')
@@ -246,4 +298,27 @@ with tabs[3]:
         for event in st.session_state.history:
             st.write(event['source']);st.caption(' | '.join(event['changes']))
 
-st.caption('Full vision: integrated diagnosis, staging and personalized treatment support. This build includes the original research model, reviewed reports and experimental gastric staging / treatment rules. It has not been clinically validated.')
+with tabs[5]:
+    st.subheader('Built from research. Designed around a bigger question.')
+    st.write('What if the separate pieces of a cancer record could tell one connected story? Neil’s prototype starts with his own research and investigates how public evidence could support each next step.')
+    for col,(label,title,body) in zip(st.columns(3),[
+        ('01 · BUILT','Original TMB research','A 50-gene random-forest classifier predicts the study’s low/high mutation-burden category. The original model runs inside this app.'),
+        ('02 · SOURCED','Real public cancer records','TCGA/GDC mutation and clinical data ground the three patient journeys. Public clinical extracts retain their historical stage and source.'),
+        ('03 · INVESTIGATED','Published research, including LORIS','The NCI’s LORIS illustrates how multiple clinical variables can inform immunotherapy-response research. Here, input readiness is demonstrated; response scoring remains future work.')]):
+        with col,st.container(border=True):
+            st.caption(label);st.markdown('### '+title);st.write(body)
+    st.markdown('### What powers each step?')
+    st.dataframe(pd.DataFrame([
+        {'Step':'Genes','Evidence':'Neil’s original model + public GDC mutation data','In this app':'Runs the research classifier'},
+        {'Step':'Imaging / pathology','Evidence':'Public clinical extracts + labeled simulated radiology','In this app':'Reviews report text and tracks its sources'},
+        {'Step':'Labs / history','Evidence':'Labeled simulated reports; LORIS input research','In this app':'Combines reviewed facts and checks input readiness'},
+        {'Step':'Stage & care','Evidence':'Published staging / treatment sources + separate clinical scenarios','In this app':'Calculates experimental stages and matches discussion pathways'}
+    ]),hide_index=True,width='stretch')
+    st.markdown('### The next chapter')
+    st.write('Expand the vision toward integrated diagnosis, staging and personalized treatment support: obtain matched reports, evaluate extraction and model performance independently, and refine the experience with oncologist feedback.')
+    with st.expander('Data provenance and model boundaries'):
+        st.write('The public cases come from TCGA/GDC. Their historical stages use AJCC 7. The separate clinical scenarios demonstrate AJCC 8 pathological gastric staging; they are not restaging of the historical cases.')
+        st.write('The radiology and blood extensions are fictional. LORIS is a published research model/tool—not the source of these patient records. No LORIS response score is generated here. Model development overlap is possible for the TMB examples.')
+    a,b=st.columns(2)
+    a.link_button('Explore NCI Genomic Data Commons','https://portal.gdc.cancer.gov/')
+    b.link_button('Explore the NCI LORIS research tool','https://loris.ccr.cancer.gov/')

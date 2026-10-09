@@ -105,7 +105,7 @@ class WorkflowTests(unittest.TestCase):
         from streamlit.testing.v1 import AppTest
         for i,case in enumerate(CASES):
             app=AppTest.from_file(str(ROOT/'prototype.py'),default_timeout=20).run()
-            app.selectbox(key='case_selector').set_value(i).run()
+            app.button(key='journey_'+str(i)).click().run()
             app.radio(key='mode_selector').set_value('Public case + explicitly simulated extension').run()
             app.button(key='load_genes').click().run()
             next(c for c in app.checkbox if c.key.startswith('gene_confirm_')).check().run()

@@ -72,7 +72,7 @@ class ClinicalUITests(unittest.TestCase):
         appfile=Path(__file__).resolve().parents[1]/'cloud/app.py'
         for i,expected in enumerate(['IIA','IIIA','IV']):
             app=AppTest.from_file(str(appfile),default_timeout=20).run()
-            app.selectbox(key='case_selector').set_value(i).run()
+            app.button(key='journey_'+str(i)).click().run()
             app.radio(key='mode_selector').set_value('Public case + explicitly simulated extension').run()
             app.button(key='clinical_demo').click().run()
             next(c for c in app.checkbox if c.key.startswith('clinical_confirm_')).check().run()
@@ -83,7 +83,7 @@ class ClinicalUITests(unittest.TestCase):
             self.assertIn('fictional',result['provenance'])
             app.selectbox(key='clinical_m').set_value('Unknown / indeterminate').run()
             self.assertIsNone(app.session_state['clinical_result'])
-            app.selectbox(key='case_selector').set_value((i+1)%3).run()
+            app.button(key='journey_'+str((i+1)%3)).click().run()
             self.assertIsNone(app.session_state['clinical_result'])
 
 if __name__=='__main__':unittest.main()
