@@ -1,0 +1,26 @@
+[
+  {
+    "id": "TCGA-VQ-A8DL",
+    "label": "Patient A \u00b7 Stage IIA in historical record",
+    "age": 69,
+    "historical_stage": "Stage IIA",
+    "source": "https://www.cancerimagingarchive.net/collection/tcga-stad/",
+    "description": "Public retrospective stomach-cancer research case. Model development overlap is possible; not independent validation."
+  },
+  {
+    "id": "TCGA-VQ-A8DU",
+    "label": "Patient B \u00b7 Stage IIIA in historical record",
+    "age": 63,
+    "historical_stage": "Stage IIIA",
+    "source": "https://www.cancerimagingarchive.net/collection/tcga-stad/",
+    "description": "Public retrospective stomach-cancer research case. Model development overlap is possible; not independent validation."
+  },
+  {
+    "id": "TCGA-VQ-A8DZ",
+    "label": "Patient C \u00b7 Stage IV in historical record",
+    "age": 70,
+    "historical_stage": "Stage IV",
+    "source": "https://www.cancerimagingarchive.net/collection/tcga-stad/",
+    "description": "Public retrospective stomach-cancer research case. Model development overlap is possible; not independent validation."
+  }
+]

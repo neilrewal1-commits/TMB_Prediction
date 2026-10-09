@@ -1,0 +1,4 @@
+SIMULATED EXTENSION — FICTIONAL RADIOLOGY REPORT
+Case ID: TCGA-VQ-A8DL
+Imaging findings: Illustrative postoperative scan description: no new measurable lesion is described in this fictional report. This does not establish absence of cancer.
+These words are invented for interface testing and are not findings from this research patient.

@@ -2,6 +2,7 @@ import pickle
 
 import pandas as pd
 import streamlit as st
+from prototype_core import genomic_csv
 
 
 # Require user authentication
@@ -45,18 +46,21 @@ if uploaded_file is None:
 else:    
 
     try:
-        dataframe = pd.read_csv(uploaded_file)
+        dataframe = genomic_csv(uploaded_file.getvalue())
 
     except (
         pd.errors.EmptyDataError,
         pd.errors.ParserError,
         UnicodeDecodeError,
+        ValueError,
     ) as error:
         st.error(f"The file could not be read as a CSV: {error}")
+        st.stop()
         
 
     if dataframe.empty:
         st.error("The uploaded CSV file does not contain any data.")
+        st.stop()
         
 
     st.subheader("Data Preview")
@@ -70,7 +74,7 @@ else:
         with st.spinner("Processing..."):
             classification_model = load_model(MODEL_PATH)
 
-            predictions = classification_model.predict(dataframe)
+            predictions = classification_model.predict(dataframe.to_numpy())
 
             result_dataframe = dataframe.copy()
             result_dataframe["Prediction"] = [

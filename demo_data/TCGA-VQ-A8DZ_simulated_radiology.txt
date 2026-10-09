@@ -1,0 +1,4 @@
+SIMULATED EXTENSION — FICTIONAL RADIOLOGY REPORT
+Case ID: TCGA-VQ-A8DZ
+Imaging findings: Illustrative follow-up scan description: a liver lesion is indeterminate; comparison with prior imaging is requested. This fictional finding does not revise the historical stage.
+These words are invented for interface testing and are not findings from this research patient.
