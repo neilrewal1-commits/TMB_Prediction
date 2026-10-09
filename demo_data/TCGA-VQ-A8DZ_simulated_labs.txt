@@ -1,0 +1,9 @@
+SIMULATED EXTENSION — FICTIONAL LABS AND HISTORY
+Case ID: TCGA-VQ-A8DZ
+Age: 70 years
+Albumin: 3.5 g/dL
+NLR: not reported
+Measured TMB: not reported
+Prior systemic therapy: unknown
+Other conditions: not supplied
+These values are fictional. They do not belong to the source TCGA patient.

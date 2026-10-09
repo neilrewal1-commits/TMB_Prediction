@@ -1,0 +1,127 @@
+{
+  "retrieved_date": "2026-10-08",
+  "clinical_snapshot": "TCIA TCGA-STAD 2016-01-05",
+  "sources": [
+    {
+      "id": "80290b78-a8a5-4b99-b1fb-3c3c6b54fa26",
+      "data_format": "PDF",
+      "cases": [
+        {
+          "submitter_id": "TCGA-VQ-A8DL"
+        }
+      ],
+      "access": "open",
+      "file_name": "TCGA-VQ-A8DL.738B95E9-007A-4267-B1A3-01DE65FBCB08.PDF",
+      "file_id": "80290b78-a8a5-4b99-b1fb-3c3c6b54fa26",
+      "data_type": "Pathology Report",
+      "file_size": 67729
+    },
+    {
+      "id": "6c0fca3b-28a1-49a1-920f-665cb2e8bc32",
+      "data_format": "MAF",
+      "cases": [
+        {
+          "submitter_id": "TCGA-VQ-A8DU"
+        }
+      ],
+      "access": "open",
+      "file_name": "99e6cc30-b754-4c05-87e0-51736a702ef6.wxs.aliquot_ensemble_masked.maf.gz",
+      "file_id": "6c0fca3b-28a1-49a1-920f-665cb2e8bc32",
+      "data_type": "Masked Somatic Mutation",
+      "file_size": 50856
+    },
+    {
+      "id": "f01e50e4-8685-41ed-bd09-7eb8cb802539",
+      "data_format": "MAF",
+      "cases": [
+        {
+          "submitter_id": "TCGA-VQ-A8DL"
+        }
+      ],
+      "access": "open",
+      "file_name": "15dedd34-208e-4a20-96b0-b73c7cb23ae1.wxs.aliquot_ensemble_masked.maf.gz",
+      "file_id": "f01e50e4-8685-41ed-bd09-7eb8cb802539",
+      "data_type": "Masked Somatic Mutation",
+      "file_size": 60822
+    },
+    {
+      "id": "cd48b77f-5d4d-423b-8fd1-16ebe339cefa",
+      "data_format": "MAF",
+      "cases": [
+        {
+          "submitter_id": "TCGA-VQ-A8DZ"
+        }
+      ],
+      "access": "open",
+      "file_name": "4e4004a2-48fd-4128-8296-fbcefea47e4e.wxs.aliquot_ensemble_masked.maf.gz",
+      "file_id": "cd48b77f-5d4d-423b-8fd1-16ebe339cefa",
+      "data_type": "Masked Somatic Mutation",
+      "file_size": 30794
+    },
+    {
+      "id": "6be4894e-9085-45b4-835f-4dc7642cf17e",
+      "data_format": "PDF",
+      "cases": [
+        {
+          "submitter_id": "TCGA-VQ-A8DZ"
+        }
+      ],
+      "access": "open",
+      "file_name": "TCGA-VQ-A8DZ.ABF1CCF2-99C9-4D55-94A2-06E867C5F460.PDF",
+      "file_id": "6be4894e-9085-45b4-835f-4dc7642cf17e",
+      "data_type": "Pathology Report",
+      "file_size": 75698
+    },
+    {
+      "id": "36b57886-cbbf-4e6e-bd74-dce1d9918ccc",
+      "data_format": "PDF",
+      "cases": [
+        {
+          "submitter_id": "TCGA-VQ-A8DU"
+        }
+      ],
+      "access": "open",
+      "file_name": "TCGA-VQ-A8DU.4BEF0A6E-C71D-46B8-8D81-8845F59152F9.PDF",
+      "file_id": "36b57886-cbbf-4e6e-bd74-dce1d9918ccc",
+      "data_type": "Pathology Report",
+      "file_size": 74358
+    }
+  ],
+  "derived_files": {
+    "TCGA-VQ-A8DZ_clinical.txt": "c27063d5c069718756f5edda3d024d49fb89fe8fa58133b5c3aca3ca0b32a7a3",
+    "TCGA-VQ-A8DU_clinical.txt": "37f502f6012b185bbdd34b88a1d10720af51c44bb9c402269fed70439cae569a",
+    "TCGA-VQ-A8DZ_simulated_radiology.txt": "142fc2679e70154485a5f06a9cfb2650b10e728b9fb530855603cf8aeeb7bc34",
+    "TCGA-VQ-A8DU_genes.csv": "85dbe888c2f78c2360c8b5d9b8dac777cd9ae485ce7b1601ffcf29dbfdbc1355",
+    "TCGA-VQ-A8DL_genes.csv": "55ec9031b8e1601fd1468ff3bbaa290bf7965e6f2b1946ab5d5d9407cd8d4420",
+    "TCGA-VQ-A8DL_simulated_labs.txt": "26e5e5dffdebb20f0195bbb3b65e7f590dc5ead900f289fcc033289dd7fd77ed",
+    "TCGA-VQ-A8DL_simulated_radiology.txt": "3247d81a2062e348e00b648fcb9bc63910a64c7672d9b951818e45d8bb55607a",
+    "TCGA-VQ-A8DZ_genes.csv": "1095796bf29774d0becda8412c3ea065f819123dc797bf4098e668eb1d8f37b4",
+    "TCGA-VQ-A8DZ_simulated_labs.txt": "a8a932dcbb3b9a1cdfd649de40a172466077d2b8243c2d332d1136ba7057ff23",
+    "feature_schema.json": "11107e5dc65a53ad41a635dc4fe72a3bbaad0bdf77d3a4fe6de3a5974f656afd",
+    "TCGA-VQ-A8DL_clinical.txt": "31e5e37fcb4228dcc1ea90a03f964e0a53055b024dadfe64911bc0cbf32285f7",
+    "TCGA-VQ-A8DU_simulated_labs.txt": "ca7f32bf780e21679e91ac73de408c6e280d654f5e6febdc37c7aa4ac3d38b2a",
+    "TCGA-VQ-A8DU_simulated_radiology.txt": "fc14734cb42fbf57115f2527244dc89e1de93ab0133084cae68ccaabb2a8e695",
+    "cases.json": "4e321de91006a5f6151a31be24f88d3daa5243937a1fa31886322849a67b615e"
+  },
+  "mapping": {
+    "variant_classes": [
+      "Missense_Mutation",
+      "Nonsense_Mutation",
+      "Frame_Shift_Del",
+      "Frame_Shift_Ins",
+      "Splice_Site",
+      "Translation_Start_Site",
+      "In_Frame_Del",
+      "In_Frame_Ins"
+    ],
+    "method": "For each of the 50 study genes, set 1 if any MAF row has that Hugo_Symbol and a listed Variant_Classification; otherwise 0. Current masked MAF coverage and original preprocessing equivalence have not been established."
+  },
+  "source_sha256": {
+    "TCGA-VQ-A8DU.maf.gz": "fe2d43dc1423c7378ac1a474be013e9aa47939eac3b5e02f028222cc43489312",
+    "TCGA-VQ-A8DZ.maf.gz": "ca6db11d9c448e62932eb8ee8bedbb3e095d6c67c353a9081fb461f481ee2f9f",
+    "TCGA-VQ-A8DZ.pdf": "ecc0af1b24899dbf86ec83bdcdcd1dfb5d9b5347c3c45cc5a2268bc76cef92d9",
+    "TCGA-VQ-A8DL.pdf": "e6a0a6ac09fd1098b2a956d379c7919357e21ccf6b353bc63d57e3f29d967f14",
+    "TCGA-VQ-A8DL.maf.gz": "568d2acd652b5ce4c3a2b0c75630a4deed779396a552cf622ce0386407b91204",
+    "TCGA-VQ-A8DU.pdf": "e152505ad24f52b50f9de2f5e0d393e9fd095dabbacfd584b2f7e2fb2cd442a6"
+  }
+}
