@@ -54,6 +54,18 @@ class TreatmentTests(unittest.TestCase):
         self.assertFalse(any('durvalumab' in c['title'].lower() for c in result['cards']))
         self.assertEqual(treatment_pathways(p,self.stage)['cards'],[])
 
+    def test_core_rejects_conflicting_metastasis_without_ui(self):
+        self.assertEqual(treatment_pathways(self.profile|{'metastatic':'No'},self.stage)['cards'],[])
+        m0=stage_group('T3','N0','M0',**CONTEXT)
+        self.assertEqual(treatment_pathways(self.profile,m0)['cards'],[])
+
+    def test_perioperative_requires_resectability_and_no_prior_episode_treatment(self):
+        p=self.profile|{'setting':'Before surgery — resectable','metastatic':'No','unresectable':'No','prior_episode':'No'}
+        unresolved={'stage':None,'tnm':'Unresolved','blockers':['Clinical stage outside pathological module']}
+        self.assertTrue(any('durvalumab' in c['title'] for c in treatment_pathways(p,unresolved)['cards']))
+        for change in [{'unresectable':'Yes'},{'unresectable':'Unknown'},{'prior_episode':'Yes'},{'prior_episode':'Unknown'}]:
+            self.assertEqual(treatment_pathways(p|change,unresolved)['cards'],[])
+
 class ClinicalUITests(unittest.TestCase):
     def test_three_scenarios_and_no_stale_output(self):
         from streamlit.testing.v1 import AppTest

@@ -15,6 +15,12 @@ st.markdown('''<style>
 .stApp {background: #f7f9fc;} h1,h2,h3 {color:#14344a;}
 div[data-testid="stMetric"] {background:white;padding:16px;border-radius:10px;border:1px solid #dce5ea;}
 .block-container {max-width:1200px;padding-top:2rem;}
+@media (max-width:640px) {
+ .block-container {padding-left:1rem;padding-right:1rem;padding-top:1.5rem;}
+ h1 {font-size:1.9rem !important;}
+ div[data-testid="stMetric"] {padding:10px;}
+ button[role="tab"] {min-height:44px;}
+}
 </style>''', unsafe_allow_html=True)
 CASES = json.loads((ROOT/'demo_data'/'cases.json').read_text())
 PUBLIC = 'Public research case'
@@ -40,23 +46,29 @@ def append_document(doc):
 
 with st.sidebar:
     st.title('Cancer Care')
-    st.caption('RESEARCH PROTOTYPE · VERSION 0.2')
-    selection = st.selectbox('Explore a patient', range(len(CASES)),
-                            format_func=lambda i:CASES[i]['label'], key='case_selector', on_change=reset_case)
-    mode = st.radio('Evidence mode', [PUBLIC,SIMULATED], key='mode_selector', on_change=reset_case)
-    st.caption('Switching patient or mode clears the current workspace.')
+    st.caption('RESEARCH PROTOTYPE · VERSION 0.3')
     st.button('Reset this workspace', on_click=reset_case, width='stretch')
     st.divider()
     st.markdown('**About this version**')
     st.caption('Upload public research or simulated records only. Files are processed in this app session, with no external AI service. This build is not prepared to accept private clinical records.')
     st.link_button('Original TMB research app', 'https://tmbprediction-vmbvabws9cd5mbng4gftvp.streamlit.app/predictionapp')
 
+st.title('See how the reports connect')
+st.write('Add genomic information, imaging and pathology, then labs and history. Review each source before it enters the combined view.')
+selection = st.selectbox('Explore a patient', range(len(CASES)),
+                        format_func=lambda i:CASES[i]['label'], key='case_selector', on_change=reset_case)
+mode = st.radio('Evidence mode', [PUBLIC,SIMULATED], key='mode_selector', on_change=reset_case)
+st.caption('Switching patient or mode clears this workspace. On a phone, swipe the tab row to see every step.')
+with st.expander('Start the three-minute demo'):
+    st.write('1. Choose a patient and the explicitly simulated extension mode.')
+    st.write('2. In Genomics, load the example CSV, confirm it and run the model.')
+    st.write('3. In Imaging and Labs, load an example, check the source and add the confirmed report.')
+    st.write('4. In Stage & care, load the separate fictional clinical scenario, review its inputs and confirm the calculation.')
+    st.write('5. Use Summary to review the sources and download the results. Fictional scenarios remain separate from the historical patient record.')
 case = CASES[selection]
 for key, default in [('documents',[]),('history',[]),('latest_changes',[]),('genomic',None)]:
     if key not in st.session_state: st.session_state[key] = default
 
-st.title('See how the reports connect')
-st.write('Add genomic information, imaging and pathology, then labs and history. Review each source before it enters the combined view.')
 st.caption(f"{case['id']} · {case['description']}")
 if mode == SIMULATED:
     st.warning('SIMULATED EXTENSION: any added fictional imaging or lab values are demonstration inputs, not facts about this TCGA patient. This label remains in exports.')
@@ -68,7 +80,7 @@ cols = st.columns(3)
 cols[0].metric('1 · Genomics', 'Added' if st.session_state.genomic else 'Awaiting input')
 cols[1].metric('2 · Imaging / pathology', str(sum(d['stage']=='imaging' for d in st.session_state.documents))+' reports')
 cols[2].metric('3 · Labs / history', str(sum(d['stage']=='labs' for d in st.session_state.documents))+' reports')
-tabs = st.tabs(['1  Genomics','2  Imaging & pathology','3  Labs & history','Combined view','4  Staging & treatment'])
+tabs = st.tabs(['1 Genomics','2 Imaging','3 Labs','Summary','4 Stage & care'])
 
 with tabs[0]:
     st.subheader('Your TMB research model')

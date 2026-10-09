@@ -4,9 +4,8 @@ Stage groups: AJCC 8 pathological stomach tables reproduced by NCI PDQ.
 Treatment cards: selected source-linked pathways, not an exhaustive guideline.
 """
 import math
-import re
 
-VERSION = 'gastric-demo-0.2 / evidence checked 2026-10-08'
+VERSION = 'gastric-demo-0.3 / evidence checked 2026-10-08'
 NCI = 'https://www.cancer.gov/types/stomach/hp/stomach-treatment-pdq'
 FDA_HER2 = 'https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-pembrolizumab-her2-positive-gastric-or-gastroesophageal-junction-adenocarcinoma'
 FDA_CLDN = 'https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-zolbetuximab-clzb-chemotherapy-gastric-or-gastroesophageal-junction-adenocarcinoma'
@@ -66,6 +65,12 @@ def treatment_pathways(p, stage):
     setting=p.get('setting','Unknown')
     if setting not in ['After surgery','Before surgery — resectable','Advanced — first line','Advanced — later line']:out['blockers'].append('Confirm the current treatment setting, separately from historical stage.')
     if p.get('same_episode') is not True:out['blockers'].append('Confirm these inputs describe one assessment episode; do not combine historical staging with a new recurrence.')
+    # Enforce consistency here, not only in the screen calling the rules.
+    m=stage.get('tnm','').split()[-1:]
+    if (m==['M0'] and p.get('metastatic')=='Yes') or (m==['M1'] and p.get('metastatic')=='No'):
+        out['blockers'].append('Staging and treatment assessments disagree about distant metastasis in the same episode.')
+    if setting=='Before surgery — resectable' and p.get('unresectable')!='No':
+        out['blockers'].append('Confirm the disease is resectable; an unknown or unresectable assessment cannot match the perioperative pathway.')
     if out['blockers']:return out
     if p.get('fitness')!='Reviewed for combination therapy':
         out['blockers'].append('Combination-treatment fitness is unconfirmed or needs specialist review. Age, weight or albumin alone cannot establish eligibility.')
@@ -82,7 +87,7 @@ def treatment_pathways(p, stage):
         else:out['notes'].append('Early-stage postoperative management needs more detailed endoscopic, margin and surgical risk criteria than this module implements; no regimen is selected.')
     elif setting=='Before surgery — resectable':
         if p.get('metastatic')!='No':out['blockers'].append('Confirm no distant metastasis and clinical resectability before considering a perioperative pathway.')
-        elif p.get('prior_advanced')!='No':out['blockers'].append('Confirm previously untreated disease for this illustrative perioperative pathway.')
+        elif p.get('prior_episode')!='No':out['blockers'].append('Confirm no previous treatment in this episode for this illustrative perioperative pathway; no prior advanced therapy is insufficient.')
         elif immune_ok:card('Perioperative durvalumab + FLOT discussion','The entered profile describes an adult with resectable gastric adenocarcinoma. FDA approval covers treatment before and after surgery followed by durvalumab alone.',FDA_PERIOP,checks+' A team must confirm clinical stage, resectability and FLOT suitability; this is not an adjuvant-only substitute.')
         out['notes'].append('Clinical cTNM grouping is not calculated by the pathological calculator. A pathological stage must not be reused as a pretreatment clinical stage.')
     else:

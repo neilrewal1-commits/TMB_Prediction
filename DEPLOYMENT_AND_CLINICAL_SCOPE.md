@@ -1,4 +1,4 @@
-# Deployment and clinical scope — version 0.2
+# Deployment and clinical scope — version 0.3
 
 ## Separate phone-accessible Streamlit app
 
@@ -18,11 +18,11 @@ Source: https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-a
 
 Deployment was attempted on 2026-10-08. GitHub's browser sign-in returned a 500 error before Streamlit access was confirmed. A live URL has not been established. The code and deployment configuration are ready; a successful Community Cloud sign-in and deployment are still required. A GitHub PR URL is not a live app URL.
 
-After deploying, verify that the landing page loads, all three demo cases run, report uploads work, and the new clinical scenarios produce IIA, IIIA and IV. On a phone, expand the sidebar to choose a patient and evidence mode; scroll the tab row to reach Staging & treatment. Mobile layout has not yet been visually verified on a hosted deployment.
+After deploying, verify that the landing page loads, all three demo cases run, report uploads work, and the new clinical scenarios produce IIA, IIIA and IV. Patient and evidence-mode controls are on the main screen for phones; swipe the tab row to reach Stage & care. Mobile layout has not yet been visually verified on a hosted deployment.
 
 ## What changed
 
-The new **4 · Staging & treatment** tab adds two deterministic, experimental capabilities:
+The new **4 · Stage & care** tab adds two deterministic, experimental capabilities:
 
 1. Calculate an AJCC 8 pathological gastric stage group from human-confirmed invasion depth, positive/examined regional node counts and M category. It does not copy the historical stage label.
 2. Match selected treatment discussion pathways to current setting, adult age, clinician-assessed fitness, biomarker results and immunotherapy risk review.
@@ -59,4 +59,8 @@ The FDA approval notices below are evidence snapshots, not a substitute for revi
 
 ## Verification
 
-21 automated tests pass. They cover original upload/model behavior plus selected AJCC reference groups, N-category boundaries, wrong-system and unknown-input rejection, biomarker gates, fitness and episode gates, treatment-setting distinctions, three UI clinical scenarios, and stale-output clearing. The deployment entry point is tested through Streamlit AppTest. No oncologist review or prospective clinical validation has occurred.
+23 automated tests pass. They cover original upload/model behavior plus selected AJCC reference groups, N-category boundaries, wrong-system and unknown-input rejection, biomarker gates, fitness and episode gates, treatment-setting distinctions, three UI clinical scenarios, and stale-output clearing. The deployment entry point is tested through Streamlit AppTest. No oncologist review or prospective clinical validation has occurred.
+
+## Version 0.3 refinements
+
+The main screen now contains the patient/mode controls and a short demo guide, with narrower-screen spacing and touch-sized tabs. These layout changes have passed AppTest but still need visual verification on the hosted phone app. Clinical consistency checks also run inside the rule engine: contradictory metastasis inputs block treatment matching, and perioperative matching requires confirmed resectability and no prior treatment in the current episode. No prior advanced-disease treatment is not treated as proof of an entirely untreated episode.

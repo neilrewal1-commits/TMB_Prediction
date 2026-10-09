@@ -15,7 +15,7 @@ python -m pip install -r requirements-prototype.txt
 streamlit run prototype.py
 ```
 
-Use Python 3.12 in a fresh virtual environment. Version 0.2 adds experimental
+Use Python 3.12 in a fresh virtual environment. Version 0.3 adds experimental
 AJCC 8 pathological gastric staging from reviewed findings and treatment-pathway
 matching. It does not diagnose from scans or prescribe treatment.
 

@@ -20,7 +20,7 @@ def clinical_panel(case, simulated_mode):
                 'age':[69,63,70][i],'setting':['After surgery','After surgery','Advanced — first line'][i],
                 'fitness':'Reviewed for combination therapy','immune_review':'Reviewed — no flagged concern',
                 'metastatic':['No','No','Yes'][i],'unresectable':['No','No','Yes'][i],
-                'prior_advanced':'No','her2':['Unknown','Unknown','Positive'][i],
+                'prior_advanced':'No','prior_episode':'Yes','her2':['Unknown','Unknown','Positive'][i],
                 'cps':None if i<2 else 5.0,'cldn':'Unknown','msi':'Unknown','symptoms':'No',
                 'same_episode':True,'source':'FICTIONAL scenario '+['A','B','C'][i]+': all clinical assessment inputs are invented for demonstration, including fitness review. No clinician has reviewed this scenario.'}
             for key,value in values.items():st.session_state['clinical_'+key]=value
@@ -46,6 +46,7 @@ def clinical_panel(case, simulated_mode):
         metastatic=select('Distant metastasis at this treatment assessment','metastatic',['Unknown','No','Yes'])
         unresectable=select('Locally advanced and unresectable','unresectable',['Unknown','No','Yes'])
         prior=select('Previous systemic treatment for this advanced-disease episode','prior_advanced',['Unknown','No','Yes'])
+        prior_episode=select('Any previous cancer treatment in this assessment episode (including surgery)','prior_episode',['Unknown','No','Yes'])
         fitness=select('Clinical fitness / organ-function review','fitness',['Unknown','Reviewed for combination therapy','Needs specialist assessment'])
         immune=select('Immunotherapy risk review','immune_review',['Unknown','Reviewed — no flagged concern','Concern present — specialist review needed'])
     with right:
@@ -57,7 +58,7 @@ def clinical_panel(case, simulated_mode):
         st.caption('Weight, albumin and NLR remain in the report profile. They do not substitute for fitness review, drug-specific checks or measured biomarkers.')
     source=st.text_area('Source reports, dates and assessment context',key='clinical_source',placeholder='Identify the relevant report pages and assessment date. For a simulation, explicitly say fictional.')
     same=st.checkbox('These assessment inputs refer to one episode; any historical or recurrent disease has been reconciled.',key='clinical_same_episode')
-    profile={'site':site,'age':age,'setting':setting,'fitness':fitness,'immune_review':immune,'metastatic':metastatic,'unresectable':unresectable,'prior_advanced':prior,'her2':her2,'cps':cps,'cldn':cldn,'msi':msi,'symptoms':symptoms,'same_episode':same}
+    profile={'site':site,'age':age,'setting':setting,'fitness':fitness,'immune_review':immune,'metastatic':metastatic,'unresectable':unresectable,'prior_advanced':prior,'prior_episode':prior_episode,'her2':her2,'cps':cps,'cldn':cldn,'msi':msi,'symptoms':symptoms,'same_episode':same}
     staging_inputs={'depth':depth,'positive':positive,'examined':examined,'m':m,'basis':basis,'edition':edition,'neoadjuvant':neo}
     fingerprint=hashlib.sha256(json.dumps([profile,staging_inputs,source,simulated_mode],sort_keys=True).encode()).hexdigest()
     confirmed=st.checkbox('I reviewed the supporting sources and understand the experimental scope of these calculations.',key='clinical_confirm_'+fingerprint)
