@@ -1,4 +1,4 @@
-"""Separate Streamlit Community Cloud entry point and dependency scope."""
+"""Community Cloud entry point. Appearance release: dark theme, 2026-10-09."""
 from pathlib import Path
 import runpy
 import sys
