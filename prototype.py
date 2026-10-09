@@ -12,8 +12,7 @@ from clinical_ui import clinical_panel
 
 st.set_page_config(page_title='Cancer Care | Research Prototype', page_icon='◈', layout='wide')
 st.markdown('''<style>
-.stApp {background: #f7f9fc;} h1,h2,h3 {color:#14344a;}
-div[data-testid="stMetric"] {background:white;padding:16px;border-radius:10px;border:1px solid #dce5ea;}
+div[data-testid="stMetric"] {background:rgba(128,128,128,0.06);padding:16px;border-radius:10px;border:1px solid rgba(128,128,128,0.28);}
 .block-container {max-width:1200px;padding-top:2rem;}
 @media (max-width:640px) {
  .block-container {padding-left:1rem;padding-right:1rem;padding-top:1.5rem;}
