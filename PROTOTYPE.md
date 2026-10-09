@@ -1,6 +1,6 @@
 # Cancer Care research prototype
 
-This is a working first increment of Neil Rewal's vision: combine genomic, imaging, pathology, laboratory and patient-history evidence to support personalized cancer care. The current build runs Neil's existing TMB research model and implements the report-upload and evidence-review workflow. Diagnosis inference, independent staging and personalized treatment selection remain future clinical-model work.
+This is a working first increment of Neil Rewal's vision: combine genomic, imaging, pathology, laboratory and patient-history evidence to support personalized cancer care. The current build runs Neil's existing TMB research model and implements the report-upload and evidence-review workflow. Version 0.2 also adds an experimental pathological staging calculator and selected treatment-pathway matching; see `DEPLOYMENT_AND_CLINICAL_SCOPE.md` for the implemented boundaries. Diagnosis inference and validated clinical decision-making remain future work.
 
 ## Run locally
 
@@ -63,13 +63,13 @@ These are demonstrations, not independent model-validation cases. Historical pat
 
 Primary sources: [TCIA TCGA-STAD](https://www.cancerimagingarchive.net/collection/tcga-stad/), [GDC](https://portal.gdc.cancer.gov/), [LORIS repository](https://github.com/rootchang/LORIS), [NCI LORIS](https://loris.ccr.cancer.gov/), [NCI stomach cancer treatment](https://www.cancer.gov/types/stomach/treatment/by-stage).
 
-## LORIS and future treatment support
+## LORIS and further clinical development
 
 The current UI checks whether diagnosis, age, albumin, NLR, measured TMB and prior systemic-therapy information are present and suitably formatted. It does not map free text into a cancer category or issue a LORIS score. The original research model's binary output cannot replace measured TMB.
 
 The LORIS repository and NCI web calculator expose different coefficients. The website also distinguishes its logistic score from its mapped response-rate estimate. Version selection, score calibration, intended population, licensing and clinical review must be resolved before integrating a prediction. No LORIS source implementation is bundled in this branch.
 
-The broader app can develop toward diagnosis, staging and treatment support. The next clinical increment needs a defined cancer-specific scope for validation, a reviewed staging schema, structured biomarker and treatment-history inputs, guideline-linked treatment alternatives, and an evaluation set independent of training. Starting validation with gastric cancer follows the current research base; it does not limit the eventual multi-cancer vision.
+The broader app can develop toward clinically validated diagnosis, staging and treatment support. Beyond the version 0.2 rules described in `DEPLOYMENT_AND_CLINICAL_SCOPE.md`, the next clinical increment needs a defined cancer-specific scope for validation, a reviewed staging schema, structured biomarker and treatment-history inputs, guideline-linked treatment alternatives, and an evaluation set independent of training. Starting validation with gastric cancer follows the current research base; it does not limit the eventual multi-cancer vision.
 
 Before accepting real clinical records, the app also needs authentication for this entry point, secure storage and deletion, access controls, a privacy review, robust patient/date reconciliation and deployment monitoring. This branch is a prototype, not a production clinical product.
 

@@ -1,6 +1,6 @@
 # Three-minute demonstration outline
 
-This script describes the implemented prototype, with the full clinical vision identified as future work. Timing is approximate; rehearse against the actual screen recording. Contest-specific video requirements have not been verified in this document.
+This script describes the implemented prototype, with the full clinical vision identified as future work. Version 0.2 adds the experimental staging/pathway demonstration described below; distinguish it from clinical validation. Timing is approximate; rehearse against the actual screen recording. Contest-specific video requirements have not been verified in this document.
 
 | Time | Screen action | Suggested narration |
 |---|---|---|
@@ -33,3 +33,9 @@ Use screen recordings of the real app. Keep simulated-data labels visible. Do no
 5. Which narrowly defined clinical task should we validate first within the full vision?
 
 Record feedback accurately and obtain permission before using a clinician's name, image or quotation. Ask for a review of this specific prototype; do not imply endorsement of clinical effectiveness.
+
+## Version 0.2 clinical demonstration update
+
+At 1:40–2:20, show **4 · Staging & treatment**, load a fictional clinical scenario, review its inputs and confirm. Explain: “This next module calculates an AJCC 8 pathological stage from confirmed findings rather than copying a stage label. It then matches selected treatment discussion options to the entered setting and biomarkers. These clinical scenarios are fictional, the rule coverage is limited, and an oncologist has not validated the app.”
+
+For the final 40 seconds, replace claims that staging and pathways are wholly unimplemented with: “The prototype now includes experimental staging and treatment-pathway rules. It does not interpret scan images or prescribe treatment. Clinical validation and broader coverage are the next steps.” Keep the original report sources and fictional clinical scenario visually distinct.

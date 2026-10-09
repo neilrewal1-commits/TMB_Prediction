@@ -8,6 +8,7 @@ import streamlit as st
 
 from prototype_core import (ROOT, GENES, FIELDS, genomic_csv, inspect_report,
                             current_facts, commit_report, loris_readiness, export_summary)
+from clinical_ui import clinical_panel
 
 st.set_page_config(page_title='Cancer Care | Research Prototype', page_icon='◈', layout='wide')
 st.markdown('''<style>
@@ -39,7 +40,7 @@ def append_document(doc):
 
 with st.sidebar:
     st.title('Cancer Care')
-    st.caption('RESEARCH PROTOTYPE · VERSION 0.1')
+    st.caption('RESEARCH PROTOTYPE · VERSION 0.2')
     selection = st.selectbox('Explore a patient', range(len(CASES)),
                             format_func=lambda i:CASES[i]['label'], key='case_selector', on_change=reset_case)
     mode = st.radio('Evidence mode', [PUBLIC,SIMULATED], key='mode_selector', on_change=reset_case)
@@ -67,7 +68,7 @@ cols = st.columns(3)
 cols[0].metric('1 · Genomics', 'Added' if st.session_state.genomic else 'Awaiting input')
 cols[1].metric('2 · Imaging / pathology', str(sum(d['stage']=='imaging' for d in st.session_state.documents))+' reports')
 cols[2].metric('3 · Labs / history', str(sum(d['stage']=='labs' for d in st.session_state.documents))+' reports')
-tabs = st.tabs(['1  Genomics','2  Imaging & pathology','3  Labs & history','Combined view'])
+tabs = st.tabs(['1  Genomics','2  Imaging & pathology','3  Labs & history','Combined view','4  Staging & treatment'])
 
 with tabs[0]:
     st.subheader('Your TMB research model')
@@ -181,6 +182,7 @@ def report_panel(stage):
 
 with tabs[1]: report_panel('imaging')
 with tabs[2]: report_panel('labs')
+with tabs[4]: clinical_panel(case, mode == SIMULATED)
 
 with tabs[3]:
     st.subheader('The combined picture')
@@ -206,7 +208,7 @@ with tabs[3]:
             st.write('Imaging information has been added. Uncertain findings remain uncertain and do not automatically change the recorded stage.')
         if any(k in facts for k in ['albumin','nlr','other_conditions','treatment_history']):
             st.write('Clinical context is now available for review. This version does not infer treatment suitability or drug doses from these values.')
-        st.markdown('Surgery, systemic therapies (including chemotherapy, targeted therapy and immunotherapy), and radiation have different roles. A specific treatment comparison needs clinician-reviewed logic that is not yet implemented in this build.')
+        st.markdown('Open **4 · Staging & treatment** to calculate a pathological stage from confirmed findings and match experimental treatment discussion options. That workspace requires explicit assessment inputs and keeps fictional scenarios separate from this report profile.')
         st.link_button('NCI: stomach cancer treatment by stage','https://www.cancer.gov/types/stomach/treatment/by-stage')
     with right:
         st.markdown('**What is still unknown**')
@@ -221,7 +223,7 @@ with tabs[3]:
         st.caption('Your experimental high/low TMB result cannot fill the measured-TMB field.')
         st.link_button('View NCI LORIS research tool','https://loris.ccr.cancer.gov/')
     st.divider()
-    st.download_button('Download appointment / research summary',export_summary(case,mode,st.session_state.genomic,st.session_state.documents),case['id']+'_summary.txt','text/plain')
+    st.download_button('Download appointment / research summary',export_summary(case,mode,st.session_state.genomic,st.session_state.documents,st.session_state.get('clinical_result')),case['id']+'_summary.txt','text/plain')
     with st.expander('Uploaded reports and change history'):
         for doc in list(st.session_state.documents):
             a,b=st.columns([4,1]);a.write(doc['filename']+' · '+doc['provenance'])
@@ -233,4 +235,4 @@ with tabs[3]:
         for event in st.session_state.history:
             st.write(event['source']);st.caption(' | '.join(event['changes']))
 
-st.caption('Full vision: integrated diagnosis, staging and personalized treatment support. This build demonstrates the report workflow and original research model; clinical decision models require separate development and validation.')
+st.caption('Full vision: integrated diagnosis, staging and personalized treatment support. This build includes the original research model, reviewed reports and experimental gastric staging / treatment rules. It has not been clinically validated.')
