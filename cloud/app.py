@@ -1,4 +1,4 @@
-"""Community Cloud entry point. Experience release: patient journeys and research story, v0.4."""
+"""Community Cloud entry point for the five-page Cancer Care app."""
 from pathlib import Path
 import runpy
 import sys

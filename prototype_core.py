@@ -186,11 +186,9 @@ def loris_readiness(facts: dict, conflicts: list[str]) -> dict:
 
 def export_summary(case: dict, mode: str, genomic: dict | None, documents: list[dict], clinical: dict | None = None) -> str:
     facts, conflicts = current_facts(documents)
-    lines = ['CANCER CARE RESEARCH PROTOTYPE', 'Case: ' + case['id'], 'Mode: ' + mode,
-             'Educational demonstration; no clinical diagnosis or prescription is generated.', '']
+    lines = ['CANCER CARE · CASE SUMMARY', 'Case: ' + case['id'], 'Data: ' + mode, '']
     if genomic:
-        lines += ['Experimental TMB study category: ' + genomic['label'],
-                  'Input: ' + genomic['source'], 'This is not a clinical mutations/Mb measurement.', '']
+        lines += ['TMB study category: ' + genomic['label'], 'Input: ' + genomic['source'], '']
     for doc in documents:
         lines += ['Report: ' + doc['filename'] + ' (' + doc['provenance'] + ')']
         for row in doc['fields']:
@@ -201,19 +199,18 @@ def export_summary(case: dict, mode: str, genomic: dict | None, documents: list[
                   f"Source: {row['filename']}, page {row['page']} ({row['provenance']})"]
     if conflicts: lines += ['', 'Conflicting fields: ' + ', '.join(FIELDS[k] for k in conflicts)]
     lines += ['', 'Unknown or unresolved:', *['- '+FIELDS[k] for k in FIELDS if k not in facts]]
-    lines += ['', 'Research model: LORIS version/calibration reconciliation pending; no response estimate issued.',
+    lines += ['', 'LORIS: no response estimate issued.',
               'Sources:', 'https://www.cancerimagingarchive.net/collection/tcga-stad/',
               'https://github.com/rootchang/LORIS',
               'https://www.cancer.gov/types/stomach/treatment/by-stage']
     if clinical:
-        lines += ['', 'SEPARATE EXPERIMENTAL CLINICAL ASSESSMENT',
+        lines += ['', 'SEPARATE CLINICAL ASSESSMENT',
                   'Provenance: '+clinical['provenance'], 'Assessment source: '+clinical['source'],
                   'Calculated group: '+str(clinical['staging']['stage']),
                   'Components: '+clinical['staging']['tnm'],
-                  'This assessment does not replace the historical reported stage.',
                   'Review blockers: '+ '; '.join(clinical['staging']['blockers']+clinical['treatment']['blockers'])]
         for card in clinical['treatment']['cards']:
             lines += ['Discussion option: '+card['title'],card['why'],card['checks'],'Evidence: '+card['source']]
         lines += ['Missing: '+', '.join(clinical['treatment']['missing']),*clinical['treatment']['notes'],
-                  'Rules: '+clinical['staging']['version'],'Not clinically validated. Not an exhaustive treatment guideline.']
+                  'Rules: '+clinical['staging']['version']]
     return '\n'.join(lines)

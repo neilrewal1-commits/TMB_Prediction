@@ -1,5 +1,10 @@
 # Cancer Care research prototype
 
+The main entry point now opens a five-page navigation shell. The complete
+workflow documented below is preserved on the final **Full research workspace**
+page (`integrated_report.py`). See README.md for the new image, nearby-center
+and community pages, Streamlit secrets, and their separate session/storage scope.
+
 This is a working first increment of Neil Rewal's vision: combine genomic, imaging, pathology, laboratory and patient-history evidence to support personalized cancer care. The current build runs Neil's existing TMB research model and implements the report-upload and evidence-review workflow. Version 0.3 also adds an experimental pathological staging calculator and selected treatment-pathway matching; see `DEPLOYMENT_AND_CLINICAL_SCOPE.md` for the implemented boundaries. Diagnosis inference and validated clinical decision-making remain future work.
 
 ## Run locally
@@ -15,7 +20,7 @@ streamlit run prototype.py
 
 On Windows, activate with `.venv\Scripts\activate`.
 
-The separate `prototype.py` entry point is for public research and simulated cases. It does not require the original app's Google authentication configuration. `Login.py` and its authentication remain unchanged. Do not upload private medical records to this build. The original deployment's `requirements.txt` is unchanged; use the prototype requirements for this entry point. No external language-model API, API key, or paid service is required.
+The separate `prototype.py` entry point is for public research and simulated cases. It does not require the original app's Google authentication configuration. `Login.py` and its authentication remain unchanged. Do not upload private medical records to this build. The original deployment's `requirements.txt` is unchanged; use the prototype requirements for this entry point. The final research workspace needs no external API; the new image and nearby-center pages require an OpenAI API key in Streamlit secrets and incur charges when explicitly used.
 
 ## What works now
 

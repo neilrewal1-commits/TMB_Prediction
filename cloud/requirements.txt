@@ -4,3 +4,6 @@ pandas==2.2.3
 numpy==2.3.5
 scipy==1.17.0
 pypdf==6.10.0
+openai>=2.0.0,<3
+pydantic>=2.8,<3
+pillow>=11,<13

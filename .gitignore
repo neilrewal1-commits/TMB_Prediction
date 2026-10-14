@@ -3,3 +3,7 @@ __pycache__/
 *.pyc
 .streamlit/secrets.toml
 test-results/
+.local/
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm

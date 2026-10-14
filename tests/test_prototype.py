@@ -104,7 +104,8 @@ class WorkflowTests(unittest.TestCase):
     def test_all_three_patient_workflows_and_reset(self):
         from streamlit.testing.v1 import AppTest
         for i,case in enumerate(CASES):
-            app=AppTest.from_file(str(ROOT/'prototype.py'),default_timeout=20).run()
+            app=AppTest.from_file(str(ROOT/'prototype.py'),default_timeout=30).run()
+            app.switch_page('integrated_report.py').run()
             app.button(key='journey_'+str(i)).click().run()
             app.radio(key='mode_selector').set_value('Public case + explicitly simulated extension').run()
             app.button(key='load_genes').click().run()

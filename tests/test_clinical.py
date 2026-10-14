@@ -71,7 +71,9 @@ class ClinicalUITests(unittest.TestCase):
         from streamlit.testing.v1 import AppTest
         appfile=Path(__file__).resolve().parents[1]/'cloud/app.py'
         for i,expected in enumerate(['IIA','IIIA','IV']):
-            app=AppTest.from_file(str(appfile),default_timeout=20).run()
+            app=AppTest.from_file(str(appfile),default_timeout=30).run()
+            app.session_state['care_audience'] = 'Clinician'
+            app.switch_page('../integrated_report.py').run()
             app.button(key='journey_'+str(i)).click().run()
             app.radio(key='mode_selector').set_value('Public case + explicitly simulated extension').run()
             app.button(key='clinical_demo').click().run()
