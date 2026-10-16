@@ -1,4 +1,4 @@
-"""Community Cloud entry point for the five-page Cancer Care app."""
+"""Community Cloud entry point for Cancer Care, including its welcome page."""
 from pathlib import Path
 import runpy
 import sys

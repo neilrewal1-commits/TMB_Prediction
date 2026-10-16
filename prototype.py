@@ -13,7 +13,8 @@ apply_theme()
 ROOT = Path(__file__).resolve().parent
 
 pages = [
-    st.Page(ROOT / 'app_pages/genes.py', title='Gene report', icon=':material/genetics:', default=True),
+    st.Page(ROOT / 'app_pages/welcome.py', title='Welcome', icon=':material/home:', default=True),
+    st.Page(ROOT / 'app_pages/genes.py', title='Gene report', icon=':material/genetics:', url_path='genes'),
     st.Page(ROOT / 'app_pages/radiology.py', title='Imaging', icon=':material/radiology:', url_path='radiology'),
     st.Page(ROOT / 'app_pages/patient.py', title='My care', icon=':material/local_hospital:', url_path='patient'),
     st.Page(ROOT / 'app_pages/community.py', title='Support', icon=':material/groups:', url_path='community'),

@@ -198,7 +198,8 @@ class MultipageUITests(unittest.TestCase):
 
     def app(self):
         from streamlit.testing.v1 import AppTest
-        return AppTest.from_file(str(ROOT / 'prototype.py'), default_timeout=30).run()
+        app = AppTest.from_file(str(ROOT / 'prototype.py'), default_timeout=30).run()
+        return app.switch_page('app_pages/genes.py').run()
 
     def test_image_explanation_is_simple_in_patient_view(self):
         app = self.app()
@@ -247,7 +248,7 @@ class MultipageUITests(unittest.TestCase):
         from streamlit.testing.v1 import AppTest
         app = AppTest.from_file(str(ROOT / 'cloud/app.py'), default_timeout=30).run()
         self.assertEqual([e.message for e in app.exception], [])
-        for page in ['app_pages/radiology.py', 'app_pages/patient.py',
+        for page in ['app_pages/welcome.py', 'app_pages/genes.py', 'app_pages/radiology.py', 'app_pages/patient.py',
                      'app_pages/community.py', 'integrated_report.py']:
             app.switch_page('../' + page).run()
             self.assertEqual([e.message for e in app.exception], [])
@@ -320,7 +321,7 @@ class MultipageUITests(unittest.TestCase):
         self.assertEqual(len(app.exception), 0)
         app.session_state['portal_patient'] = {'alias': 'Test', 'age': 40,
                                               'diagnosis': '', 'city': '', 'country': ''}
-        for page in ['app_pages/radiology.py', 'app_pages/patient.py',
+        for page in ['app_pages/welcome.py', 'app_pages/genes.py', 'app_pages/radiology.py', 'app_pages/patient.py',
                      'app_pages/community.py', 'integrated_report.py']:
             app.switch_page(page).run()
             self.assertEqual([e.message for e in app.exception], [])
