@@ -11,9 +11,6 @@ from prototype_core import (ROOT, FIELDS, genomic_csv, inspect_report,
 from clinical_ui import clinical_panel
 from care_app.ui import badge, clinician, field_label, header, words
 
-if not clinician():
-    st.switch_page(str(ROOT / 'app_pages/home.py'))
-
 CASES = json.loads((ROOT / 'demo_data' / 'cases.json').read_text())
 PUBLIC = 'Public research case'
 SIMULATED = 'Public case + explicitly simulated extension'

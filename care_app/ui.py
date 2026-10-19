@@ -13,17 +13,6 @@ def apply_theme():
     st.html('<style>' + Path(__file__).with_name('theme.css').read_text(encoding='utf-8') + '</style>')
 
 
-def interaction_controls():
-    """Run only bundled, trusted JavaScript; sound preferences stay in the browser."""
-    script = Path(__file__).with_name('interactions.js').read_text(encoding='utf-8')
-    st.html('''<button type="button" class="care-sound" data-care-sound role="switch"
-        aria-label="Button sounds" aria-checked="true">
-        <span class="care-sound-icon" aria-hidden="true">♪</span>
-        <span data-care-sound-label>Sound on</span>
-        <span class="care-sound-track" aria-hidden="true"><span></span></span>
-        </button><script>''' + script + '</script>', unsafe_allow_javascript=True)
-
-
 def clinician():
     return st.session_state.get('care_audience', 'Patient') == 'Clinician'
 
@@ -64,7 +53,8 @@ def badge(text):
 
 
 def image_input(kind, label):
-    st.caption('OpenAI reads your photo. Cover your name and other personal details first.')
+    st.caption('New images are sent to OpenAI automatically for explanation. '
+               'Remove names and identifying details before uploading.')
     source_key = 'portal_' + kind + '_source'
     revision_key = 'portal_' + kind + '_revision'
     revision = st.session_state.get(revision_key, 0)
@@ -84,8 +74,7 @@ def image_input(kind, label):
         except ValueError as exc:
             st.error(str(exc))
             return None, result
-        with st.expander('View your photo', expanded=clinician()):
-            st.image(source['data'], caption=source['name'], width='stretch')
+        st.image(source['data'], caption=source['name'], width='stretch')
         if st.button('Remove report', key='portal_' + kind + '_remove', icon=':material/close:'):
             st.session_state[source_key] = None
             st.session_state[revision_key] = revision + 1
@@ -100,12 +89,12 @@ def auto_analyze(kind, source, state, analyzer):
         return False
     key = setting('OPENAI_API_KEY')
     if not key or key == 'replace-with-your-api-key':
-        st.info(words('Report reading is unavailable. Please try again later.', 'Image analysis is not connected. Configure the OpenAI API key to continue.'),
+        st.info('Image analysis is not connected. Configure the OpenAI API key to continue.',
                 icon=':material/link_off:')
         return False
     if state.get('error'):
-        st.error(words('We could not read your report. Please try again.', state['error']))
-        if st.button(words('Try again', 'Retry image analysis'), key='portal_auto_retry_' + kind):
+        st.error(state['error'])
+        if st.button('Retry image analysis', key='portal_auto_retry_' + kind):
             state.update(attempted=False, error=None)
     if state.get('attempted'):
         return False

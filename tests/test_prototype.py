@@ -105,7 +105,6 @@ class WorkflowTests(unittest.TestCase):
         from streamlit.testing.v1 import AppTest
         for i,case in enumerate(CASES):
             app=AppTest.from_file(str(ROOT/'prototype.py'),default_timeout=30).run()
-            app.get('segmented_control')[0].set_value('Clinician').run()
             app.switch_page('integrated_report.py').run()
             app.button(key='journey_'+str(i)).click().run()
             app.radio(key='mode_selector').set_value('Public case + explicitly simulated extension').run()
