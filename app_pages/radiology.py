@@ -6,6 +6,11 @@ from care_app.ai import review_radiology
 from prototype_core import ROOT
 from care_app.ui import auto_analyze, clinician, header, image_input, patient_explanation, status_card, words
 
+if not clinician():
+    from care_app.simple import report_page
+    report_page('radiology')
+    st.stop()
+
 header('Your imaging', 'Radiology review')
 st.caption('For the most helpful explanation, upload a readable photo of the written radiology report. '
            'Scan pictures receive limited guidance and require a radiologist’s interpretation.')

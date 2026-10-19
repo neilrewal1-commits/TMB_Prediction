@@ -9,6 +9,11 @@ from care_app.state import fingerprint
 from care_app.ui import auto_analyze, clinician, header, image_input, patient_explanation, status_card, words
 from prototype_core import GENES, ROOT
 
+if not clinician():
+    from care_app.simple import report_page
+    report_page('genes')
+    st.stop()
+
 header('Your gene report', 'Genomic analysis')
 left, right = st.columns([2.1, 1], gap='large')
 with left, st.container(border=True, key='care_card_gene_upload'):

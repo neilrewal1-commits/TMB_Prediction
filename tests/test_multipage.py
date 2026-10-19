@@ -201,6 +201,50 @@ class MultipageUITests(unittest.TestCase):
         app = AppTest.from_file(str(ROOT / 'prototype.py'), default_timeout=30).run()
         return app.switch_page('app_pages/genes.py').run()
 
+    def test_patient_home_has_three_clear_starting_choices(self):
+        from streamlit.testing.v1 import AppTest
+        app = AppTest.from_file(str(ROOT / 'prototype.py'), default_timeout=30).run()
+        self.assertEqual(app.title[0].value, 'How can we help?')
+        self.assertEqual(len(app.main.get('page_link')), 3)
+        self.assertEqual([e.message for e in app.exception], [])
+        self.assertFalse(app.dataframe)
+        self.assertNotIn('Research workspace', [p.label for p in app.get('page_link')])
+
+    def test_patient_report_hides_gene_review_and_model_controls(self):
+        app = self.app()
+        app.session_state['portal_genes_source'] = {'name': 'sample.png', 'data': image_bytes()}
+        with patch('care_app.ui.setting', return_value='test-not-a-real-key'), \
+             patch.object(ai, 'extract_genes', return_value=gene_report()):
+            app.run()
+        self.assertFalse(app.dataframe)
+        self.assertFalse(any('model' in b.label.lower() or 'classifier' in b.label.lower() for b in app.button))
+        app.get('segmented_control')[0].set_value('Clinician').run()
+        self.assertTrue(app.dataframe)
+        self.assertEqual([e.message for e in app.exception], [])
+
+    def test_patient_care_needs_only_a_location(self):
+        app = self.app().switch_page('app_pages/patient.py').run()
+        self.assertEqual([t.label for t in app.text_input], ['City or postal code', 'Country'])
+        app.text_input[0].set_value('San Ramon')
+        app.text_input[1].set_value('United States').run()
+        self.assertEqual(app.session_state['portal_patient']['city'], 'San Ramon')
+        self.assertEqual([e.message for e in app.exception], [])
+
+    def test_guided_report_keeps_results_when_changing_report_type(self):
+        app = self.app().switch_page('app_pages/report.py').run()
+        app.session_state['portal_radiology_source'] = {'name': 'sample.png', 'data': image_bytes()}
+        app.run()
+        app.session_state['portal_radiology']['extraction'] = {
+            'readable': True, 'summary': 'Your report describes mild scarring.',
+            'findings': [], 'limitations': [],
+        }
+        app.run()
+        app.radio(key='care_report_kind').set_value('Gene test report').run()
+        self.assertNotIn('Your report describes mild scarring.', [m.value for m in app.markdown])
+        app.radio(key='care_report_kind').set_value('Scan or X-ray report').run()
+        self.assertIn('Your report describes mild scarring.', [m.value for m in app.markdown])
+        self.assertEqual([e.message for e in app.exception], [])
+
     def test_image_explanation_is_simple_in_patient_view(self):
         app = self.app()
         app.switch_page('app_pages/radiology.py').run()
@@ -222,8 +266,8 @@ class MultipageUITests(unittest.TestCase):
             self.assertEqual(analyze.call_count, 1)
         self.assertNotIn('Read image', [b.label for b in app.button])
         self.assertEqual([e.message for e in app.exception], [])
-        self.assertIn('In everyday words', [h.value for h in app.subheader])
-        self.assertIn('A small spot in the lung.', [e.label for e in app.expander])
+        self.assertIn('Your results', [h.value for h in app.subheader])
+        self.assertIn('The cause is not yet known.', [m.value for m in app.markdown])
         app.get('segmented_control')[0].set_value('Clinician').run()
         self.assertNotIn('In everyday words', [h.value for h in app.subheader])
         self.assertIn('Pulmonary nodule', [e.label for e in app.expander])
@@ -240,7 +284,7 @@ class MultipageUITests(unittest.TestCase):
         self.assertEqual(app.session_state['care_audience'], 'Clinician')
         self.assertEqual(app.title[0].value, 'Research workspace')
         app.get('segmented_control')[0].set_value('Patient').run()
-        self.assertEqual(app.title[0].value, 'Explore a sample case')
+        self.assertEqual(app.title[0].value, 'How can we help?')
         self.assertNotIn('clinical_demo', [b.key for b in app.button])
         self.assertEqual([e.message for e in app.exception], [])
 
@@ -248,7 +292,7 @@ class MultipageUITests(unittest.TestCase):
         from streamlit.testing.v1 import AppTest
         app = AppTest.from_file(str(ROOT / 'cloud/app.py'), default_timeout=30).run()
         self.assertEqual([e.message for e in app.exception], [])
-        for page in ['app_pages/welcome.py', 'app_pages/genes.py', 'app_pages/radiology.py', 'app_pages/patient.py',
+        for page in ['app_pages/radiology.py', 'app_pages/patient.py',
                      'app_pages/community.py', 'integrated_report.py']:
             app.switch_page('../' + page).run()
             self.assertEqual([e.message for e in app.exception], [])
@@ -321,13 +365,15 @@ class MultipageUITests(unittest.TestCase):
         self.assertEqual(len(app.exception), 0)
         app.session_state['portal_patient'] = {'alias': 'Test', 'age': 40,
                                               'diagnosis': '', 'city': '', 'country': ''}
-        for page in ['app_pages/welcome.py', 'app_pages/genes.py', 'app_pages/radiology.py', 'app_pages/patient.py',
+        app.get('segmented_control')[0].set_value('Clinician').run()
+        for page in ['app_pages/radiology.py', 'app_pages/patient.py',
                      'app_pages/community.py', 'integrated_report.py']:
             app.switch_page(page).run()
             self.assertEqual([e.message for e in app.exception], [])
         app.button(key='journey_1').click().run()
         self.assertEqual(app.session_state['portal_patient']['alias'], 'Test')
         app.switch_page('app_pages/patient.py').run()
+        app.get('segmented_control')[0].set_value('Clinician').run()
         app.session_state['portal_genes'] = {'digest': 'old', 'extraction': None, 'prediction': {'label': 'old'}}
         next(t for t in app.text_input if t.label in ['Preferred name', 'Patient alias']).set_value('New patient')
         next(b for b in app.button if b.label == 'Save details').click().run()
@@ -336,6 +382,7 @@ class MultipageUITests(unittest.TestCase):
 
     def test_gene_image_review_model_and_changed_image_clears_result(self):
         app = self.app()
+        app.get('segmented_control')[0].set_value('Clinician').run()
         app.session_state['portal_genes_source'] = {'name': 'test.png', 'data': image_bytes()}
         app.run()
         with patch('care_app.ui.setting', return_value='test-not-a-real-key'), \
@@ -345,8 +392,8 @@ class MultipageUITests(unittest.TestCase):
             self.assertEqual(analyze.call_count, 1)
         self.assertNotIn('Read report', [b.label for b in app.button])
         self.assertEqual([e.message for e in app.exception], [])
-        next(c for c in app.checkbox if c.label.startswith('I checked')).check().run()
-        next(b for b in app.button if b.label == 'Get model result').click().run()
+        next(c for c in app.checkbox if c.key and c.key.startswith('portal_gene_confirm_')).check().run()
+        next(b for b in app.button if b.label == 'Run TMB classifier').click().run()
         self.assertEqual(app.session_state['portal_genes']['prediction']['label'], 'Low study category')
         app.switch_page('app_pages/radiology.py').run()
         app.switch_page('app_pages/genes.py').run()
@@ -358,6 +405,7 @@ class MultipageUITests(unittest.TestCase):
 
     def test_unknown_gene_disables_prediction(self):
         app = self.app()
+        app.get('segmented_control')[0].set_value('Clinician').run()
         app.session_state['portal_genes_source'] = {'name': 'test.png', 'data': image_bytes()}
         app.run()
         report = gene_report()
@@ -365,8 +413,8 @@ class MultipageUITests(unittest.TestCase):
         with patch('care_app.ui.setting', return_value='test-not-a-real-key'), \
              patch.object(ai, 'extract_genes', return_value=report):
             app.run()
-        next(c for c in app.checkbox if c.label.startswith('I checked')).check().run()
-        self.assertTrue(next(b for b in app.button if b.label == 'Get model result').disabled)
+        next(c for c in app.checkbox if c.key and c.key.startswith('portal_gene_confirm_')).check().run()
+        self.assertTrue(next(b for b in app.button if b.label == 'Run TMB classifier').disabled)
 
 
 if __name__ == '__main__':

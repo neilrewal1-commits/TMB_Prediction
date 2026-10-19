@@ -175,7 +175,7 @@ def review_radiology(data):
         'findings. Do not transcribe patient identifiers. Include practical questions for a '
         'clinician. Do not claim that a single image establishes or excludes disease.',
         RadiologyReview).model_dump()
-    if result['image_kind'] == 'Scan xsxsx':
+    if result['image_kind'] == 'Scan image':
         # The general vision model is not a diagnostic radiology model. Enforce
         # this boundary in code as well as in the prompt.
         result.update(findings=[],

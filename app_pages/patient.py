@@ -7,7 +7,12 @@ from openai import OpenAIError
 from care_app.ai import find_centers, setting
 from prototype_core import ROOT
 from care_app.state import clear_patient
-from care_app.ui import api_error, header, status_card, words
+from care_app.ui import api_error, clinician, header, status_card, words
+
+if not clinician():
+    from care_app.simple import care_page
+    care_page()
+    st.stop()
 
 header('Your care', 'Patient profile')
 patient = st.session_state.portal_patient

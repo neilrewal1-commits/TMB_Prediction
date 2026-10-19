@@ -1,6 +1,10 @@
 import streamlit as st
 
-from care_app.ui import header, words
+from care_app.ui import clinician, header, words
+
+if not clinician():
+    from care_app.simple import home_link
+    home_link()
 
 header('Support for you', 'Patient support resources')
 resources = [
@@ -22,6 +26,7 @@ for icon, title, description, label, url in resources:
             st.write(description)
         action.link_button(label, url, icon=':material/arrow_outward:', width='stretch')
 
-if st.toggle('Connect with peers in this app', key='portal_community_show'):
-    from care_app.community_ui import render_community
-    render_community()
+with st.expander('Community features'):
+    if st.toggle('Connect with peers in this app', key='portal_community_show'):
+        from care_app.community_ui import render_community
+        render_community()
