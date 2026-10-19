@@ -9,8 +9,15 @@ The app now uses `st.navigation` and `st.Page` with five pages:
    review the 50 gene statuses and run the original random-forest classifier.
    A printed measured TMB value is transcribed separately. Missing genes remain
    unknown and block model prediction; no numeric TMB is calculated from the image.
-2. **Radiology review** — upload one image. Written report screenshots provide
-   documented findings; raw scans receive only a limited, non-diagnostic description.
+2. **Radiology review** — upload multiple PDF reports and/or PNG/JPEG/WebP images
+   together for one combined review. Findings link to filenames and PDF pages;
+   contradictions and unreadable documents remain visible. Written report screenshots
+   provide documented findings; raw scans receive a limited, non-diagnostic description.
+   Limits: 10 files, 10 MB per file, 30 MB combined, 30 pages per PDF and 60 total
+   pages/images. Scanned PDFs are supported through native PDF input to OpenAI.
+   Adding/removing a file starts a fresh combined review; ordinary reruns do not
+   re-submit the same batch. Password-protected or invalid PDFs are rejected before
+   an API request. Patient and Clinician views share this workflow.
 3. **Patient & treatment centers** — maintain a session-only patient overview and
    search official center information near a city/postal code and country.
 4. **Community** — publish an optional alias profile, find similar experiences,
