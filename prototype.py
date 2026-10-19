@@ -18,6 +18,7 @@ pages = [
     st.Page(ROOT / 'app_pages/radiology.py', title='Imaging', icon=':material/radiology:', url_path='radiology'),
     st.Page(ROOT / 'app_pages/patient.py', title='My care', icon=':material/local_hospital:', url_path='patient'),
     st.Page(ROOT / 'app_pages/community.py', title='Support', icon=':material/groups:', url_path='community'),
+    st.Page(ROOT / 'app_pages/cancer_basics.py', title='Cancer Basics', icon=':material/menu_book:', url_path='cancer-basics'),
     st.Page(ROOT / 'integrated_report.py', title='Research workspace', icon=':material/science:', url_path='research'),
 ]
 navigation = st.navigation(pages, position='hidden')

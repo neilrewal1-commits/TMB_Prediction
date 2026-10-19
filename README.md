@@ -3,7 +3,17 @@ Identifies Low and High TMB from Tumor Mutation Data
 
 ## Integrated research prototype
 
-The app now uses `st.navigation` and `st.Page` with five pages:
+**Cancer Basics** appears immediately after Support in both app views. It offers
+six illustrated reading chapters: what cancer is; causes, risk and prevention;
+growth and spread; diagnosis and biomarkers; treatment and daily life; and stomach
+cancer. The stomach chapter covers symptoms, H. pylori and other risks, biopsy,
+staging, treatment biomarkers and nutrition. Each section links to NCI or American
+Cancer Society sources. Readers can jump between chapters, use Previous/Next, or
+download the complete guide. The illustrations are original explanatory SVGs;
+this section works without an OpenAI key or uploading patient information.
+
+
+The app uses `st.navigation` and `st.Page` for its main workspaces:
 
 1. **Gene report & TMB** — upload a PNG/JPEG/WebP report image, extract with OpenAI,
    review the 50 gene statuses and run the original random-forest classifier.
