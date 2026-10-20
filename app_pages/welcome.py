@@ -8,8 +8,8 @@ st.html('''
 <section class="welcome-hero" aria-labelledby="welcome-title">
   <div class="welcome-eyebrow">NEIL REWAL · CONGRESSIONAL APP CHALLENGE</div>
   <h1 id="welcome-title">Cancer Care.<br><span>A clearer picture.<br>A more informed next step.</span></h1>
-  <p class="welcome-lead">From a gene report to the bigger picture: a student-built prototype
-  connecting original cancer research, understandable report explanations and resources for care.</p>
+  <p class="welcome-lead">Inspired by my grandmother. Built on my cancer research.<br>
+  Helping patients understand their reports and find people who understand them.</p>
   <div class="welcome-tags"><span>Original TMB research</span><span>Public cancer data</span><span>Patient &amp; clinician views</span></div>
   <div class="welcome-orbit" aria-hidden="true"><div class="welcome-orbit-core">+</div><span>GENES</span><span>IMAGING</span><span>CARE</span></div>
 </section>
