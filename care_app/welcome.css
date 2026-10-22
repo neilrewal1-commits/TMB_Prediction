@@ -13,3 +13,17 @@
 .st-key-welcome_patient button,.st-key-welcome_clinician button{min-height:62px;font-size:1.05rem!important;}
 .st-key-welcome_clinician button{background:#e8f3f3;border-color:#88b8b3;color:#123e4a;}
 @media(max-width:700px){.welcome-hero{padding:1.5rem;border-radius:18px;}.welcome-questions{grid-template-columns:1fr;gap:1.15rem;}.welcome-lead{font-size:1rem;}.welcome-questions h2{margin:.3rem 0 0;}}
+
+.welcome-hero{position:relative;overflow:hidden;}
+.welcome-dna{position:absolute;right:1.5rem;top:.7rem;width:290px;pointer-events:none;}
+.welcome-dna svg{display:block;width:100%;height:auto;}
+.welcome-eyebrow,.welcome-hero h1,.welcome-lead{position:relative;z-index:1;max-width:calc(100% - 265px);}
+.welcome-questions{position:relative;z-index:1;margin-top:2rem;}
+.welcome-story{max-width:none;padding:.6rem .15rem 0;}
+.welcome-story h2{font-size:1.65rem!important;font-weight:750!important;color:#12394c;margin:0 0 .65rem;}
+.welcome-story p{font-size:1.12rem;line-height:1.7;color:#294b60;}
+.welcome-story .welcome-research-lead{font-weight:600;}
+.st-key-welcome_patient button,.st-key-welcome_clinician button{min-height:76px;border-radius:14px!important;}
+.st-key-welcome_patient button p,.st-key-welcome_clinician button p{font-size:1.16rem!important;font-weight:750!important;letter-spacing:.045em;}
+@media(max-width:850px){.welcome-dna{width:205px;right:.5rem;top:2rem;}.welcome-eyebrow,.welcome-hero h1,.welcome-lead{max-width:calc(100% - 185px);}}
+@media(max-width:600px){.welcome-dna{width:135px;right:-.5rem;top:.8rem;opacity:.45;}.welcome-eyebrow,.welcome-hero h1,.welcome-lead{max-width:100%;}.welcome-hero h1{padding-right:60px;}.welcome-story p{font-size:1.05rem;}.st-key-welcome_patient button p,.st-key-welcome_clinician button p{font-size:1rem!important;}}
