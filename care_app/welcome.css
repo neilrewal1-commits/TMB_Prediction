@@ -1,33 +1,15 @@
-.welcome-hero {position:relative;overflow:hidden;border-radius:24px;padding:3rem;background:linear-gradient(120deg,#102e41 0%,#123d4a 65%,#17625c 100%);color:#f5fbff;isolation:isolate;}
-.welcome-eyebrow {font-size:.73rem;font-weight:700;letter-spacing:.13em;color:#08776f;margin-bottom:1rem;}
-.welcome-hero .welcome-eyebrow {color:#8ce0d2;}
-.welcome-hero h1 {color:#fff !important;font-size:clamp(2.1rem,3.6vw,3.1rem) !important;line-height:1.13 !important;letter-spacing:-.04em;max-width:720px;margin:0 0 1.15rem;position:relative;z-index:1;}
-.welcome-hero h1 span {color:#d9f2ed;}
-.welcome-lead {color:#d5e7eb;font-size:1.05rem;line-height:1.65;max-width:640px;margin:0 0 1.5rem;position:relative;z-index:1;}
-.welcome-tags {display:flex;flex-wrap:wrap;gap:.5rem;position:relative;z-index:1;}
-.welcome-tags span {padding:.35rem .7rem;border:1px solid #527c87;border-radius:24px;color:#e8f5f6;font-size:.75rem;background:#153e4d;}
-.welcome-orbit {position:absolute;width:280px;height:280px;border:1px solid #4d85854d;border-radius:50%;right:-95px;top:80px;z-index:0;}
-.welcome-orbit::before {content:'';position:absolute;inset:38px;border:1px solid #72b6ad38;border-radius:50%;}
-.welcome-orbit-core {position:absolute;inset:93px;display:grid;place-items:center;background:#399d8f3d;border-radius:24px;color:#a4e2d2;font-size:60px;font-weight:300;}
-.welcome-orbit span {position:absolute;font-size:10px;letter-spacing:.15em;color:#9bcfc9;}
-.welcome-orbit span:nth-of-type(1) {top:-8px;left:70px;}
-.welcome-orbit span:nth-of-type(2) {top:130px;left:-23px;}
-.welcome-orbit span:nth-of-type(3) {bottom:-8px;left:95px;}
-[class*="st-key-care_card_welcome"] h3 {font-size:1.15rem !important;}
-[class*="st-key-care_card_welcome"] [data-testid="stPageLink"] a {display:flex;align-items:center;justify-content:center;border:1px solid #b8d7d1;border-radius:10px;min-height:48px;padding:.65rem 1rem;background:#edf7f4;color:#086b65;font-weight:650;}
-[class*="st-key-care_card_welcome_demo"] [data-testid="stPageLink"] a {background:#087f78;color:#fff;border-color:#087f78;}
-[class*="st-key-care_card_welcome_demo"] [data-testid="stPageLink"] a:hover {background:#076b65;color:#fff;}
-.welcome-story {padding:1.5rem .1rem .4rem;max-width:820px;}
-.welcome-story h2,.welcome-research h2 {font-size:clamp(1.4rem,2.2vw,1.85rem) !important;line-height:1.3;margin:.3rem 0 .8rem;}
-.welcome-story p,.welcome-research p {color:#465f70;font-size:1rem;line-height:1.75;}
-.welcome-features {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.15rem;}
-.welcome-features article {border-top:3px solid #6db7a8;padding:1.25rem;background:#fff;border-radius:0 0 14px 14px;}
-.welcome-number {font-size:.73rem;letter-spacing:.1em;color:#08776f;font-weight:700;}
-.welcome-features h3 {margin:.8rem 0 .6rem;font-size:1.08rem !important;}
-.welcome-features p {font-size:.9rem;color:#526879;line-height:1.65;margin:0;}
-.welcome-research {border:1px solid #d7e7e4;border-radius:20px;padding:2rem;background:#eef7f4;margin-top:1rem;}
-.welcome-research p {max-width:780px;}
-.welcome-facts {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1.5rem;padding-top:1.4rem;border-top:1px solid #c5dbd6;}
-.welcome-facts strong {display:block;color:#163b49;font-size:1.15rem;}
-.welcome-facts span {display:block;color:#526879;font-size:.78rem;margin-top:.3rem;}
-@media(max-width:760px){.welcome-hero{padding:1.6rem;border-radius:18px;}.welcome-orbit{display:none;}.welcome-lead{font-size:.96rem;}.welcome-features,.welcome-facts{grid-template-columns:1fr;}.welcome-research{padding:1.4rem;}.welcome-features{gap:.8rem;}}
+/* Welcome styles remain scoped so report tools retain their own layout. */
+.welcome-hero{padding:2.4rem 2.6rem;border-radius:24px;background:linear-gradient(115deg,#102e41,#163e50 65%,#17625c);color:#fff;}
+.welcome-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.14em;color:#9be2d5;margin-bottom:1.2rem;}
+.welcome-hero h1{color:#fff!important;font-size:clamp(2.7rem,5vw,4rem)!important;line-height:1.08!important;margin:0 0 1.1rem;letter-spacing:-.045em;}
+.welcome-hero h1 span{display:block;font-size:clamp(1.15rem,2vw,1.55rem);line-height:1.4;color:#c9ece6;letter-spacing:-.015em;margin-top:.6rem;font-weight:450;}
+.welcome-lead{font-size:1.05rem;line-height:1.65;color:#e1eef2;max-width:780px;margin-bottom:1.7rem;}
+.welcome-questions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.7rem;border-top:1px solid #537481;padding-top:1.5rem;}
+.welcome-questions article>span{color:#9be2d5;font-size:.69rem;letter-spacing:.12em;font-weight:700;}
+.welcome-questions h2{color:#fff!important;font-size:clamp(1.2rem,1.7vw,1.5rem)!important;line-height:1.35!important;margin:.65rem 0 0;padding:0!important;letter-spacing:-.02em;}
+.welcome-story{max-width:900px;padding:.3rem .15rem 0;}
+.welcome-story p{font-size:1rem;line-height:1.65;color:#425c6c;margin:.3rem 0 .65rem;}
+.welcome-story strong{color:#163e50;}
+.st-key-welcome_patient button,.st-key-welcome_clinician button{min-height:62px;font-size:1.05rem!important;}
+.st-key-welcome_clinician button{background:#e8f3f3;border-color:#88b8b3;color:#123e4a;}
+@media(max-width:700px){.welcome-hero{padding:1.5rem;border-radius:18px;}.welcome-questions{grid-template-columns:1fr;gap:1.15rem;}.welcome-lead{font-size:1rem;}.welcome-questions h2{margin:.3rem 0 0;}}

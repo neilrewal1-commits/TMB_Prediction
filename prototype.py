@@ -19,24 +19,32 @@ pages = [
     st.Page(ROOT / 'app_pages/patient.py', title='My care', icon=':material/local_hospital:', url_path='patient'),
     st.Page(ROOT / 'app_pages/community.py', title='Support', icon=':material/groups:', url_path='community'),
     st.Page(ROOT / 'app_pages/cancer_basics.py', title='Cancer Basics', icon=':material/menu_book:', url_path='cancer-basics'),
+    st.Page(ROOT / 'app_pages/about_research.py', title='My Research & Sources', icon=':material/science:', url_path='about-research'),
     st.Page(ROOT / 'integrated_report.py', title='Research workspace', icon=':material/science:', url_path='research'),
 ]
 navigation = st.navigation(pages, position='hidden')
 
-with st.sidebar:
-    st.html('<div class="care-brand"><span class="care-mark" aria-hidden="true">+</span>Cancer Care</div>')
-    st.session_state.setdefault('care_audience', 'Patient')
-    def change_audience():
-        st.session_state.care_audience = st.session_state.care_audience_picker or 'Patient'
-    st.segmented_control('View', ['Patient', 'Clinician'],
-        default=st.session_state.care_audience, key='care_audience_picker',
-        on_change=change_audience, selection_mode='single', width='stretch', label_visibility='collapsed')
-    for page in pages:
-        st.page_link(page, label=page.title, icon=page.icon, width='stretch')
-    st.divider()
-    patient = st.session_state.portal_patient
-    name = patient['alias'] or 'My workspace'
-    st.html('<div class="care-session"><span class="care-avatar">' + escape(name[0].upper()) + '</span>' + escape(name) + '</div>')
-    st.button('Clear workspace', key='portal_clear', on_click=clear_patient, icon=':material/restart_alt:')
-
+if navigation.url_path != '':
+    with st.sidebar:
+        st.html('<div class="care-brand"><span class="care-mark" aria-hidden="true">+</span>Cancer Care</div>')
+        st.session_state.setdefault('care_audience', 'Patient')
+        def change_audience():
+            st.session_state.care_audience = st.session_state.care_audience_picker or 'Patient'
+        st.session_state.setdefault('care_audience_picker', st.session_state.care_audience)
+        st.segmented_control('View', ['Patient', 'Clinician'],
+            key='care_audience_picker',
+            on_change=change_audience, selection_mode='single', width='stretch', label_visibility='collapsed')
+        st.page_link(pages[0], label='Welcome', icon=pages[0].icon, width='stretch')
+        st.caption('YOUR FOUR STEPS')
+        labels = ['1. Gene Report & TMB', '2. Radiology Report', '3. Find Cancer Care', '4. Find Support']
+        for page, label in zip(pages[1:5], labels):
+            st.page_link(page, label=label, icon=page.icon, width='stretch')
+        st.divider()
+        st.page_link(pages[5], label='Cancer Basics', icon=pages[5].icon, width='stretch')
+        st.page_link(pages[6], label='My Research & Sources', icon=pages[6].icon, width='stretch')
+        st.divider()
+        patient = st.session_state.portal_patient
+        name = patient['alias'] or 'My workspace'
+        st.html('<div class="care-session"><span class="care-avatar">' + escape(name[0].upper()) + '</span>' + escape(name) + '</div>')
+        st.button('Clear workspace', key='portal_clear', on_click=clear_patient, icon=':material/restart_alt:')
 navigation.run()
