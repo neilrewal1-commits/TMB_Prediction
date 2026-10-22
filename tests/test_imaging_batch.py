@@ -111,6 +111,26 @@ class CombinedRequestTests(unittest.TestCase):
 
 
 class CombinedImagingUITests(unittest.TestCase):
+    def test_uploads_show_pdf_and_image_previews_in_both_views(self):
+        for audience in ('Patient', 'Clinician'):
+            with patch('care_app.ui.setting', return_value='fake-test-key'), \
+                 patch.object(ai, 'review_radiology_batch', return_value=result()), \
+                 patch('care_app.imaging.st.pdf') as preview, \
+                 patch('care_app.imaging.st.image') as image_preview:
+                app = AppTest.from_file(str(ROOT / 'prototype.py'), default_timeout=30)
+                app.session_state['care_audience'] = audience
+                app.run().switch_page('app_pages/radiology.py').run()
+                batch = files()
+                app.session_state['portal_radiology_sources'] = batch
+                app.run()
+                self.assertFalse(app.exception)
+                preview.assert_called_once()
+                self.assertEqual(preview.call_args.args[0], batch[1]['data'])
+                self.assertIn('second.pdf', preview.call_args.kwargs['alt'])
+                self.assertTrue(any(e.label == 'Files in this review (2)' and e.proto.expanded
+                                    for e in app.expander))
+                image_preview.assert_called_once_with(batch[0]['data'], width='stretch')
+
     def test_batch_auto_review_once_change_removal_and_view_switch(self):
         with patch('care_app.ui.setting', return_value='fake-test-key'), \
              patch.object(ai, 'review_radiology_batch', return_value=result()) as analyze:

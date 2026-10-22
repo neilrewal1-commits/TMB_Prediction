@@ -48,10 +48,14 @@ def imaging_input():
         st.session_state.portal_radiology = {'digest': digest, 'extraction': None,
             'prediction': None, 'attempted': False, 'error': None}
     state = st.session_state.portal_radiology
-    with st.expander(f'Files in this review ({len(files)})', expanded=clinician()):
+    with st.expander(f'Files in this review ({len(files)})', expanded=True):
         for file in files:
             st.text(file['name'])
-            if not file['name'].lower().endswith('.pdf'):
+            if file['name'].lower().endswith('.pdf'):
+                st.pdf(file['data'], height=600,
+                       key='imaging_pdf_' + file['name'] + '_' + file['digest'],
+                       alt='Uploaded imaging document: ' + file['name'])
+            else:
                 try:
                     ai.image_data_url(file['data'])
                     st.image(file['data'], width='stretch')
