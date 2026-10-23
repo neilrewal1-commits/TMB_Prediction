@@ -1,12 +1,39 @@
 import streamlit as st
 
 from care_app.ui import header, words
+from html import escape
 
 st.caption('STEP 4 OF 4 · COMMUNITY & SUPPORT')
 header('You’re not alone.', 'Community & patient support')
 st.html('<section class="gene-research"><span class="gene-eyebrow">FIND YOUR COMMUNITY</span>'
         '<h2>There are people you can turn to.</h2>'
         '<p>Meet others facing cancer, talk with a support navigator, or get help understanding cancer tests. For you and the people who care about you.</p></section>')
+
+
+st.html("""<style>
+[class*="st-key-support_choice_"] {
+    background: linear-gradient(145deg, #ffffff, #eaf4f7);
+    border: 1px solid #bed4de !important;
+    border-top: 5px solid #078480 !important;
+    border-radius: 20px !important;
+    padding: 24px 18px !important;
+}
+.support-card-title {
+    text-align: center; color: #163d50; font-size: 1.65rem !important;
+    font-weight: 850 !important; line-height: 1.2 !important;
+    min-height: 4rem; display: flex; align-items: center; justify-content: center;
+    margin: 0 0 14px !important;
+}
+.support-card-copy { text-align: center; color: #345365; font-size: 1.08rem;
+    line-height: 1.5; min-height: 5rem; margin: 0 0 10px; }
+[class*="st-key-support_choice_"] button { min-height: 58px; }
+[class*="st-key-support_choice_"] button p { font-size: 1rem !important; font-weight: 800 !important; }
+.support-section-title { text-align: center; font-size: 1.7rem !important;
+    font-weight: 850 !important; color: #163d50; margin: 24px 0 !important; }
+@media(max-width:700px) {
+    .support-card-title,.support-card-copy { min-height: 0; }
+}
+</style>""")
 
 st.session_state.setdefault('support_section', 'CONNECT WITH OTHERS')
 choices = [
@@ -15,9 +42,8 @@ choices = [
     ('UNDERSTAND RESULTS', 'Make sense of the words', 'Learn about cancer tests and prepare your questions.', ':material/menu_book:'),
 ]
 for col, (label, title, description, icon) in zip(st.columns(3), choices):
-    with col, st.container(border=True):
-        st.subheader(title)
-        st.write(description)
+    with col, st.container(border=True, key='support_choice_' + label.split()[0].lower()):
+        st.html('<h3 class="support-card-title">' + escape(title) + '</h3><p class="support-card-copy">' + escape(description) + '</p>')
         if st.button(label, key='support_nav_' + label, icon=icon, width='stretch',
                      type='primary' if st.session_state.support_section == label else 'secondary'):
             st.session_state.support_section = label
@@ -31,7 +57,7 @@ if section == 'CONNECT WITH OTHERS':
     experience = left.selectbox('Connect with', ['Everyone', 'Patients', 'Caregivers & family'], key='support_experience')
     scope = right.selectbox('Community', ['Local · East Bay demo', 'National · United States', 'Global · Online'], key='support_scope')
     profiles = [
-        ('maya', 'Maya', 'Caregivers & family', 'East Bay, California', 'Local', 'Caring for a parent', 'I’d like to share ways to support a parent and make time for myself.'),
+        ('maya', 'Maya', 'Caregivers & family', 'East Bay, California', 'Local', 'Caring for a patient', 'I’d like to share ways to support a parent and make time for myself.'),
         ('alex', 'Alex', 'Patients', 'East Bay, California', 'Local', 'Living with cancer', 'Looking for people to talk with about the everyday parts of treatment.'),
         ('jordan', 'Jordan', 'Caregivers & family', 'Chicago, United States', 'National', 'Supporting a partner', 'Hoping to connect with other families and share questions for appointments.'),
         ('sam', 'Sam', 'Patients', 'London, United Kingdom', 'Global', 'Life after treatment', 'Interested in sharing experiences and finding encouragement along the way.'),
@@ -64,18 +90,26 @@ if section == 'CONNECT WITH OTHERS':
             render_community()
 
 elif section == 'FIND SUPPORT':
-    st.subheader('YOU DON’T HAVE TO FIGURE IT OUT BY YOURSELF')
+    st.html('<h2 class="support-section-title">You don’t have to figure it out by yourself.</h2>')
     left, right = st.columns(2)
     with left, st.container(border=True):
         st.subheader('Talk with a navigator')
         st.write('Cancer Support Community navigators can listen, help you find resources, and connect you with counseling or support groups.')
         st.link_button('SPEAK WITH A NAVIGATOR', 'https://www.cancersupportcommunity.org/cancer-support-helpline', type='primary', width='stretch')
-        st.caption('Opens Cancer Support Community · Phone and online options')
+        st.caption('Cancer Support Community · Phone and online options')
+        st.markdown('**Call:** [888-793-9355](tel:+18887939355)')
+        with st.expander('Website not opening?'):
+            st.write('Copy this address into Safari or Chrome:')
+            st.code('https://www.cancersupportcommunity.org/cancer-support-helpline', language=None)
     with right, st.container(border=True):
         st.subheader('Find your support group')
         st.write('Explore in-person and online programs for people with cancer, survivors, caregivers and families.')
-        st.link_button('EXPLORE SUPPORT GROUPS', 'https://www.cancersupportcommunity.org/get-support', type='primary', width='stretch')
-        st.caption('Opens Cancer Support Community · Existing programs')
+        st.link_button('EXPLORE SUPPORT GROUPS', 'https://www.cancersupportcommunity.org/find-location-near-you', type='primary', width='stretch')
+        st.caption('Cancer Support Community · Find a local center and its programs')
+        st.markdown('[Bay Area support programs](https://cancersupport.net/services/)')
+        with st.expander('Website not opening?'):
+            st.write('Copy this address into Safari or Chrome:')
+            st.code('https://www.cancersupportcommunity.org/find-location-near-you', language=None)
     with st.container(border=True):
         st.subheader('Looking for professional emotional support?')
         st.write('Ask your care team or a navigator to help you find an oncology social worker, counselor, psychologist or psychiatrist. Peer groups offer connection; professional care offers individual support.')
