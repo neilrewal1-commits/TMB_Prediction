@@ -97,3 +97,27 @@ hr { border-color: var(--care-border); margin: .7rem 0; }
 .st-key-care_card_gene_meaning,.st-key-care_card_gene_questions {height:100%;border-top:5px solid #087f78!important;}
 .st-key-care_card_gene_questions {border-top-color:#285e88!important;}
 .st-key-care_card_gene_meaning li,.st-key-care_card_gene_questions li {font-size:1.05rem;line-height:1.65;margin-bottom:.8rem;}
+
+/* Consistent sidebar hierarchy and accessible contrast. */
+[data-testid="stSidebar"] .st-key-sidebar_welcome [data-testid="stPageLink"] a {
+ min-height:62px; background:#e9f2f8; border:1px solid #b6cfdb; border-radius:12px;
+ display:flex; justify-content:center; padding:1rem;
+}
+[data-testid="stSidebar"] .st-key-sidebar_welcome [data-testid="stPageLink"] p {
+ font-size:1.2rem!important; font-weight:800!important; letter-spacing:.055em; color:#163e54;
+}
+.sidebar-steps-heading {
+ text-align:center; color:#163e54; font-size:1.1rem; font-weight:800;
+ letter-spacing:.08em; margin:1rem 0 .4rem; line-height:1.5;
+}
+[data-testid="stSidebar"] .st-key-care_audience_picker button {
+ min-height:52px; border-radius:10px!important; border:1px solid #9ebdc7;
+ flex:1; color:#163e54; background:#f0f6fa;
+}
+[data-testid="stSidebar"] .st-key-care_audience_picker button p {
+ font-size:1.02rem!important; font-weight:800!important; letter-spacing:.025em;
+}
+[data-testid="stSidebar"] .st-key-care_audience_picker button[aria-checked="true"],
+[data-testid="stSidebar"] .st-key-care_audience_picker button[aria-pressed="true"] {
+ background:#163e54; border-color:#163e54; color:white;
+}
