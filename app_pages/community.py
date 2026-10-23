@@ -1,6 +1,6 @@
 import streamlit as st
 
-from care_app.ui import header, words
+from care_app.ui import header, words, clinician
 from html import escape
 
 st.caption('STEP 4 OF 4 · COMMUNITY & SUPPORT')
@@ -35,6 +35,11 @@ st.html("""<style>
 }
 </style>""")
 
+if clinician():
+    with st.container(border=True):
+        st.subheader('PATIENT & CAREGIVER RESOURCE REFERRALS')
+        st.write('Use the options below to recommend peer support, community navigation and cancer information resources.')
+        st.caption('Discuss emotional needs, practical barriers and caregiver support. Contact buttons open external services; no referral or patient record is sent.')
 st.session_state.setdefault('support_section', None)
 choices = [
     ('CONNECT WITH OTHERS', 'A shared experience', 'Explore connections with patients, caregivers and families.', ':material/groups:'),
