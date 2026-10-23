@@ -31,3 +31,10 @@
 .welcome-dna{width:290px;top:1.2rem;right:1.5rem;}.welcome-dna img{box-shadow:0 12px 40px #031e3033;}
 @media(max-width:850px){.welcome-dna{width:195px;top:2rem;right:.7rem;}}
 @media(max-width:600px){.welcome-dna{position:relative;float:right;width:120px;top:auto;right:auto;margin:0 0 .75rem .75rem;opacity:1;}.welcome-hero h1{padding-right:0;}.welcome-questions{clear:both;}}
+
+/* Three questions: readable, matching cards within the welcome hero. */
+.welcome-questions{border-top:0;padding-top:0;gap:1rem;align-items:stretch;}
+.welcome-questions article{background:#173f50;border:1px solid #63918f;border-radius:16px;padding:1.25rem 1.2rem;box-shadow:0 6px 20px #071f291a;}
+.welcome-questions article>span{display:block;color:#a5f0dd;font-size:.75rem;letter-spacing:.12em;font-weight:750;}
+.welcome-questions h2{font-style:italic;font-weight:550!important;font-size:clamp(1.15rem,1.6vw,1.4rem)!important;line-height:1.45!important;margin:.75rem 0 0;}
+@media(max-width:700px){.welcome-questions article{padding:1.1rem 1.2rem;}.welcome-questions{gap:.75rem;}}
