@@ -56,7 +56,7 @@ else:
         result = state.get('extraction')
 
 if result:
-    st.subheader('YOUR REPORT, EXPLAINED')
+    st.subheader('CLINICAL REVIEW SUMMARY' if clinician() else 'YOUR REPORT, EXPLAINED')
     st.write(result.get('clinical_summary') if clinician() and result.get('clinical_summary') else result['summary'])
     if not result.get('readable', True):
         st.warning('This report could not be read reliably. Please try a clearer copy.')
@@ -64,7 +64,41 @@ if result:
         st.warning(conflict)
     points = (result.get('patient_explanation') or {}).get('key_points') or [result['summary']]
     questions = result.get('questions_for_clinician') or ['Which findings should we discuss first?', 'What follow-up do you recommend?']
-    render_cards(points, questions)
+    if not clinician():
+        render_cards(points, questions)
+    else:
+        gene_state = st.session_state.get('portal_genes' if st.session_state.get('portal_gene_input_mode') == 'UPLOAD REPORT IMAGE' else 'portal_gene_structured', {})
+        gene_prediction = gene_state.get('prediction')
+        gene_source = gene_prediction.get('source', 'No gene result loaded') if gene_prediction else 'No gene result loaded'
+        radiology_source = SAMPLE.name if mode == 'TRY SAMPLE REPORT' else ', '.join(file['name'] for file in files)
+        separate_examples = bool(gene_prediction) and (mode == 'TRY SAMPLE REPORT' or gene_source.startswith('Neil_Test_Sample_'))
+        st.caption('SOURCE REVIEW · ' + ('Bundled examples are from different patients. Review each independently.' if separate_examples else 'Patient identity and matching time points have not been verified across uploads.'))
+        left, right = st.columns(2)
+        with left, st.container(border=True):
+            st.subheader('GENOMIC EVIDENCE')
+            st.write(gene_prediction['label'] if gene_prediction else 'No model prediction available')
+            st.caption(gene_source)
+            st.write('50-gene research classification; not a clinical TMB measurement.' if gene_prediction else 'Load and review gene features in Step 1.')
+        with right, st.container(border=True):
+            st.subheader('RADIOLOGY EVIDENCE')
+            st.caption(radiology_source)
+            st.write('Prepared published-case explanation' if mode == 'TRY SAMPLE REPORT' else 'AI-extracted report findings · Verify against source')
+            st.write('Review measurements, chronology and source text below.')
+        left, right = st.columns(2)
+        with left, st.container(border=True):
+            st.subheader('INFORMATION TO CONFIRM')
+            st.markdown('- Patient identity and report dates across sources.\n- Pathology and documented staging assessment.\n- Clinical TMB assay/units, MSI/MMR and PD-L1 where relevant.\n- Prior treatment, current medicines and functional status.')
+            st.caption('Review checklist: these items are not automatically verified by this prototype.')
+        with right, st.container(border=True):
+            st.subheader('FOLLOW-UP & PATIENT SUPPORT')
+            st.markdown('- Reconcile findings with the original report and pathology.\n- Review interval changes and recommended follow-up.\n- Identify the appropriate specialist or referral service.\n- Offer navigation, counseling and caregiver resources.')
+        with st.expander('FINDINGS & SOURCE REFERENCES', expanded=True):
+            for finding in result.get('findings', []):
+                st.markdown('**' + finding['finding'] + '**')
+                st.write(finding['evidence'])
+                for source_ref in finding.get('sources', []):
+                    st.caption(source_ref['filename'] + (' · page ' + str(source_ref['page']) if source_ref.get('page') else ''))
+        st.caption('Summary supports review; it does not assign cancer stage or select treatment.')
     with st.expander('SEE THE SUPPORTING REPORT TEXT'):
         for finding in result.get('findings', []):
             st.markdown('**' + finding['finding'] + '**')
