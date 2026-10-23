@@ -38,3 +38,18 @@
 .welcome-questions article>span{display:block;color:#a5f0dd;font-size:.75rem;letter-spacing:.12em;font-weight:750;}
 .welcome-questions h2{font-style:italic;font-weight:550!important;font-size:clamp(1.15rem,1.6vw,1.4rem)!important;line-height:1.45!important;margin:.75rem 0 0;}
 @media(max-width:700px){.welcome-questions article{padding:1.1rem 1.2rem;}.welcome-questions{gap:.75rem;}}
+
+/* Keep artwork in normal grid flow: question cards always begin below it. */
+.welcome-hero{display:grid;grid-template-columns:minmax(0,1fr) 290px;column-gap:2rem;align-items:start;}
+.welcome-dna{position:static;float:none;grid-column:2;grid-row:1 / 4;width:100%;margin:0;opacity:1;align-self:center;}
+.welcome-eyebrow{grid-column:1;grid-row:1;}
+.welcome-hero h1{grid-column:1;grid-row:2;padding-right:0;}
+.welcome-lead{grid-column:1;grid-row:3;font-size:1.2rem;line-height:1.7;margin-bottom:0;}
+.welcome-eyebrow,.welcome-hero h1,.welcome-lead{max-width:none;}
+.welcome-hero h1 span{font-size:clamp(1.35rem,2.3vw,1.8rem);line-height:1.4;}
+.welcome-questions{grid-column:1 / -1;grid-row:4;margin-top:2rem;}
+.welcome-questions article{text-align:center;display:flex;flex-direction:column;justify-content:center;padding:1.4rem 1rem;}
+.welcome-questions article>span{font-size:.98rem;letter-spacing:.09em;}
+.welcome-questions h2{text-align:center;font-size:clamp(1.18rem,1.7vw,1.45rem)!important;}
+@media(max-width:850px){.welcome-hero{grid-template-columns:minmax(0,1fr) 210px;column-gap:1.3rem;}.welcome-dna{width:100%;}}
+@media(max-width:600px){.welcome-hero{grid-template-columns:minmax(0,1fr);}.welcome-eyebrow,.welcome-hero h1,.welcome-lead{grid-column:1;}.welcome-dna{grid-column:1;grid-row:4;width:min(230px,100%);justify-self:center;margin-top:1.25rem;}.welcome-questions{grid-row:5;grid-column:1;margin-top:1.5rem;}.welcome-lead{font-size:1.12rem;}.welcome-questions article>span{font-size:1rem;}}
