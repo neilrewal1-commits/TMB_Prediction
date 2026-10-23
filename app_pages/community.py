@@ -94,13 +94,13 @@ elif section == 'FIND SUPPORT':
     left, right = st.columns(2)
     with left, st.container(border=True):
         st.subheader('Talk with a navigator')
-        st.write('Cancer Support Community navigators can listen, help you find resources, and connect you with counseling or support groups.')
-        st.link_button('SPEAK WITH A NAVIGATOR', 'https://www.cancersupportcommunity.org/cancer-support-helpline', type='primary', width='stretch')
-        st.caption('Cancer Support Community · Phone and online options')
-        st.markdown('**Call:** [888-793-9355](tel:+18887939355)')
+        st.write('Cancer Support Community SF Bay Area offers navigation to help patients and families find counseling, support groups and practical resources.')
+        st.link_button('SPEAK WITH A NAVIGATOR', 'https://cancersupport.net/services/navigation/', type='primary', width='stretch')
+        st.caption('SF Bay Area · Request contact through the navigation interest form')
+        st.markdown('**National CSC helpline:** [888-793-9355](tel:+18887939355)')
         with st.expander('Website not opening?'):
             st.write('Copy this address into Safari or Chrome:')
-            st.code('https://www.cancersupportcommunity.org/cancer-support-helpline', language=None)
+            st.code('https://cancersupport.net/services/navigation/', language=None)
     with right, st.container(border=True):
         st.subheader('Find your support group')
         st.write('Explore in-person and online programs for people with cancer, survivors, caregivers and families.')
