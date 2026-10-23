@@ -132,4 +132,31 @@ else:
         st.markdown('- What does this finding mean for me?\n- How do my gene and scan findings fit together?\n- What other information do we need before deciding on treatment?\n- Who can help my family with emotional and practical support?')
 
 st.divider()
-st.markdown('### Clearer information. Care you can reach. People you can turn to.')
+st.html('<section class="gene-research"><span class="gene-eyebrow">YOUR NEXT STEP</span>'
+        '<h2>You don’t have to take the next step alone.</h2>'
+        '<p>Take your questions with you, find care nearby, or reach out for support.</p></section>')
+prepare, care, support = st.columns(3)
+if prepare.button('PREPARE FOR YOUR APPOINTMENT', key='next_prepare', width='stretch', type='primary'):
+    st.session_state.support_next_action = 'prepare'
+if care.button('FIND CARE', key='next_care', width='stretch', icon=':material/local_hospital:'):
+    from prototype_core import ROOT
+    st.switch_page(str(ROOT / 'app_pages/patient.py'))
+if support.button('REACH OUT FOR SUPPORT', key='next_support', width='stretch', icon=':material/support_agent:'):
+    st.session_state.support_next_action = 'support'
+
+if st.session_state.get('support_next_action') == 'prepare':
+    with st.container(border=True):
+        st.subheader('YOUR APPOINTMENT CHECKLIST')
+        st.markdown('- Bring your gene and radiology reports.\\n- Write down your symptoms, medicines and biggest concerns.\\n- Ask how your findings affect the treatment options.\\n- Ask who to contact with questions after the appointment.')
+        st.text_area('Questions I want to ask', key='support_appointment_notes',
+                     placeholder='What matters most to you and your family?', max_chars=3000)
+        st.caption('Notes stay in this browser session and are not sent to your care team.')
+elif st.session_state.get('support_next_action') == 'support':
+    with st.container(border=True):
+        st.subheader('START WITH A CONVERSATION')
+        st.write('A navigator can help you find emotional and practical support for you and your family.')
+        st.link_button('CONTACT A BAY AREA NAVIGATOR',
+                       'https://cancersupport.net/services/navigation/', type='primary', width='stretch')
+        st.link_button('EXPLORE BAY AREA SUPPORT GROUPS',
+                       'https://cancersupport.net/services/', width='stretch')
+
