@@ -16,8 +16,8 @@ patient = st.session_state.portal_patient
 with st.form('portal_care_location_' + str(st.session_state.portal_epoch)):
     st.subheader('FIND CARE NEAR YOU')
     left, right = st.columns([1.4, 1])
-    city = left.text_input('City or ZIP / postal code', value=patient['city'], placeholder='e.g., 94526 or Danville', max_chars=100)
-    country = right.text_input('Country', value=patient['country'] or 'United States', max_chars=80)
+    city = left.text_input('City or ZIP / postal code', key='care_search_city', value=patient['city'], placeholder='e.g., 94526 or Danville', max_chars=100)
+    country = right.text_input('Country', key='care_search_country', value=patient['country'] or 'United States', max_chars=80)
     submitted = st.form_submit_button('FIND CANCER CARE', type='primary', use_container_width=True)
     if submitted:
         if not city.strip() or not country.strip():
