@@ -44,10 +44,12 @@ if not (patient['city'] and patient['country']):
         'https://www.google.com/maps/search/?api=1&query=cancer+treatment+centers+near+Danville+California',
         icon=':material/map:', type='primary', use_container_width=True)
 
-st.subheader('MAP PREVIEW · DANVILLE, CALIFORNIA')
-st.caption('Explore the Danville area below. Use the Google Maps button above for results near your entered location.')
+map_location = (patient['city'] + ', ' + patient['country']) if patient['city'] and patient['country'] else 'Danville, California'
+map_query = quote_plus('cancer treatment centers near ' + map_location)
+st.subheader('MAP PREVIEW · ' + map_location.upper())
+st.caption('Showing cancer care search results near ' + map_location + '.')
 components.iframe(
-    'https://maps.google.com/maps?q=cancer+treatment+centers+near+Danville+California&output=embed',
+    'https://maps.google.com/maps?q=' + map_query + '&output=embed',
     height=420, scrolling=False)
 st.caption('If the preview does not load, open Google Maps using the button above.')
 
