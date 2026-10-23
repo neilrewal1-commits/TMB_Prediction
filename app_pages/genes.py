@@ -155,6 +155,18 @@ if report:
         high = state['prediction']['label'].startswith('High')
         result_word = 'HIGH' if high else 'LOW'
         st.html('<section class="gene-result" aria-label="TMB model result"><div class="gene-result-label">TMB MODEL RESULT</div><div class="gene-result-value">' + result_word + '</div><div class="gene-result-sub">Predicted mutation-burden category</div></section>')
+        if clinician():
+            with st.container(border=True):
+                st.subheader('MODEL & EVIDENCE REVIEW')
+                a, b, c = st.columns(3)
+                a.metric('Input features', '50 genes')
+                b.metric('Internal test accuracy', '78.2%')
+                c.metric('Correct / test samples', '68 / 87')
+                st.caption('Reproduced using the saved model and original test.csv. Internal research evaluation; external clinical performance has not been established.')
+                st.write('**Model:** Random Forest · 50 trees · maximum depth 7. **Training / test:** 344 / 87 stomach-cancer samples.')
+                st.write('**Current source:** ' + source['name'])
+                st.write('**Interpretation:** Study-defined HIGH/LOW classification. Clinical TMB in mutations/Mb is not estimated by this output.')
+                st.write('**Review alongside:** pathology, clinically measured TMB, MSI/MMR and PD-L1 where relevant. Treatment eligibility is not established by this model.')
         bullets = [
             'The model predicts a **' + ('HIGH' if high else 'LOW') + ' mutation-burden research category.',
             'This result comes from patterns across **50 genes**.',
@@ -173,8 +185,12 @@ if report:
         def card_items(items):
             import re
             return ''.join('<li>' + re.sub(r'[*][*](.+?)[*][*]', lambda match: '<strong>' + match.group(1) + '</strong>', escape(item)) + '</li>' for item in items)
-        st.html('<div class="gene-results-grid"><section class="gene-result-card"><h3>WHAT THIS RESULT TELLS YOU</h3><ul>'
-                + card_items(bullets) + '</ul></section><section class="gene-result-card gene-doctor-card"><h3>QUESTIONS FOR YOUR DOCTOR</h3><ul>'
+        result_heading = 'RESEARCH OUTPUT & INTERPRETATION' if clinician() else 'WHAT THIS RESULT TELLS YOU'
+        questions_heading = 'BIOMARKERS & REVIEW QUESTIONS' if clinician() else 'QUESTIONS FOR YOUR DOCTOR'
+        if clinician():
+            doctor_questions = ['Is clinically measured TMB available, with assay and units?', 'Are MSI/MMR and PD-L1 results available where relevant?', 'Does pathology confirm the cancer type?', 'Are these sources from the same patient and time point?', 'What additional evidence is required for a treatment discussion?']
+        st.html('<div class="gene-results-grid"><section class="gene-result-card"><h3>' + result_heading + '</h3><ul>'
+                + card_items(bullets) + '</ul></section><section class="gene-result-card gene-doctor-card"><h3>' + questions_heading + '</h3><ul>'
                 + card_items(doctor_questions) + '</ul></section></div>')
         with st.container(key='gene_learn_link'):
             st.link_button('LEARN WHY TMB MATTERS · NATIONAL CANCER INSTITUTE', 'https://www.cancer.gov/publications/dictionaries/cancer-terms/def/tumor-mutational-burden')
