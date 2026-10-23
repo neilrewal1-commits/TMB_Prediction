@@ -3,7 +3,7 @@ from urllib.parse import quote_plus
 import streamlit as st
 
 from prototype_core import ROOT
-from care_app.ui import header, words
+from care_app.ui import header, words, clinician
 import streamlit.components.v1 as components
 
 st.caption('STEP 3 OF 4 · FIND CANCER CARE')
@@ -36,7 +36,12 @@ search_types = {
     'CANCER SPECIALISTS': 'oncologists',
     'RADIATION CENTERS': 'radiation oncology centers',
 }
-st.subheader('WHAT KIND OF CARE ARE YOU LOOKING FOR?')
+if clinician():
+    with st.container(border=True):
+        st.subheader('REFERRAL PLANNING')
+        st.write('Search by specialty and location, then confirm services with the receiving center.')
+        st.caption('Check tumor-specific expertise, referral requirements, insurance and appointment availability. Map listings do not confirm these details.')
+st.subheader('SELECT A REFERRAL SERVICE' if clinician() else 'WHAT KIND OF CARE ARE YOU LOOKING FOR?')
 selected_type = st.segmented_control(
     'Care type', options=list(search_types), default='ALL CANCER CARE',
     key='care_facility_type', selection_mode='single', width='stretch')
