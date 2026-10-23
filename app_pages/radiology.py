@@ -23,7 +23,7 @@ st.caption('STEP 2 OF 4 · RADIOLOGY REPORT')
 header('What does my radiology report mean?', 'Radiology Report · Findings & evidence')
 st.html('<section class="gene-research"><span class="gene-eyebrow">FROM MEDICAL WORDS TO CLEARER ANSWERS</span>'
         '<h2>Read the report. Understand the findings.</h2>'
-        '<p>Upload a report to see its key findings in everyday language and prepare questions for your doctor.</p></section>')
+        '<p><strong>The gene model explores mutation patterns. Your radiology report adds what the scan found.</strong></p><p>Together, they help you prepare questions about your care. Upload a report to understand its findings in everyday language.</p></section>')
 st.html('<style>.st-key-radiology_explain button,.st-key-radiology_sample_load button{min-height:60px;width:100%;}'
         '.st-key-radiology_explain button p,.st-key-radiology_sample_load button p{font-size:1.1rem;font-weight:800;}'
         '.st-key-radiology_mode button{min-height:54px;}.st-key-radiology_mode button p{font-weight:750;font-size:1rem;}</style>')
@@ -89,7 +89,6 @@ if result:
         st.markdown('**02 · RADIOLOGY REPORT**')
         st.write('Understand the scan findings and recommended follow-up.')
         st.caption(SAMPLE.name if mode == 'TRY SAMPLE REPORT' else ', '.join(file['name'] for file in files))
-    st.write('Gene information and scan findings answer different questions. Keeping both accessible can help patients prepare for a more informed conversation with their care team.')
     st.download_button('SAVE REPORT EXPLANATION', json.dumps(result, indent=2), 'radiology_explanation.json', 'application/json')
 st.divider()
 if st.button('CONTINUE TO FIND CANCER CARE →', use_container_width=True):
