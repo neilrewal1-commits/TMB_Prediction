@@ -37,7 +37,7 @@ if navigation.url_path != '':
         with st.container(key='sidebar_welcome'):
             st.page_link(pages[0], label='WELCOME', icon=pages[0].icon, width='stretch')
         st.html('<div class="sidebar-steps-heading">YOUR FOUR STEPS</div>')
-        labels = ['1. GENE REPORT & TMB', '2. RADIOLOGY REPORT', '3. FIND CANCER CARE', '4. FIND SUPPORT']
+        labels = ['1. GENE REPORT & TMB', '2. RADIOLOGY REPORT', '3. FIND CANCER CARE', '4. COMMUNITY & SUPPORT']
         with st.container(key='journey_steps'):
             for page, label in zip(pages[1:5], labels):
                 st.page_link(page, label=label, icon=page.icon, width='stretch')
