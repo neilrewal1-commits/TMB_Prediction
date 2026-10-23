@@ -1,12 +1,10 @@
-from datetime import datetime, timezone
 from urllib.parse import quote_plus
 
 import streamlit as st
-from openai import OpenAIError
 
-from care_app.ai import find_centers, setting
 from prototype_core import ROOT
-from care_app.ui import api_error, header, words
+from care_app.ui import header, words
+import streamlit.components.v1 as components
 
 st.caption('STEP 3 OF 4 · FIND CANCER CARE')
 header('Where can I find cancer care?', 'Find Cancer Care')
@@ -41,27 +39,17 @@ if patient['city'] and patient['country']:
             'https://www.google.com/maps/search/?api=1&query=' + query,
             icon=':material/map:', type='primary', use_container_width=True)
         st.caption('Opens Google Maps results for ' + location + '.')
-    if setting('OPENAI_API_KEY'):
-        with st.expander('SEARCH CENTER DETAILS'):
-            search_consent = st.checkbox('Allow OpenAI to search using this location.', key='portal_centers_consent')
-            if st.button('SEARCH CENTER DETAILS', disabled=not search_consent, icon=':material/search:'):
-                st.session_state.pop('portal_centers', None)
-                try:
-                    with st.spinner('Finding centers…'):
-                        result = find_centers(patient['city'], patient['country'])
-                        result['searched_at'] = datetime.now(timezone.utc).isoformat()
-                        st.session_state.portal_centers = result
-                except (OpenAIError, ValueError) as exc:
-                    api_error(exc)
+if not (patient['city'] and patient['country']):
+    st.link_button('OPEN CANCER CENTERS IN GOOGLE MAPS',
+        'https://www.google.com/maps/search/?api=1&query=cancer+treatment+centers+near+Danville+California',
+        icon=':material/map:', type='primary', use_container_width=True)
 
-centers = st.session_state.get('portal_centers')
-if centers:
-    st.subheader('NEARBY CENTERS')
-    st.markdown(centers['text'])
-    with st.expander('Sources'):
-        st.caption(centers['location'] + ' · ' + centers['searched_at'][:10])
-        for source in centers['sources']:
-            st.link_button(source['title'] or 'Official source', source['url'])
+st.subheader('MAP PREVIEW · DANVILLE, CALIFORNIA')
+st.caption('Explore the Danville area below. Use the Google Maps button above for results near your entered location.')
+components.iframe(
+    'https://maps.google.com/maps?q=cancer+treatment+centers+near+Danville+California&output=embed',
+    height=420, scrolling=False)
+st.caption('If the preview does not load, open Google Maps using the button above.')
 
 with st.expander(words('Optional · Your details', 'Optional · Patient demographics')):
     with st.form('portal_patient_form_' + str(st.session_state.portal_epoch)):
