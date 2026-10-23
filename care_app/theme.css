@@ -135,3 +135,21 @@ hr { border-color: var(--care-border); margin: .7rem 0; }
 .st-key-gene_learn_link a{min-height:52px;border:1px solid #9abdc8;background:#fff;padding:.8rem 1.25rem;}
 .st-key-gene_learn_link a p{font-weight:750;font-size:.95rem;text-align:center;}
 @media(max-width:700px){.gene-results-grid{grid-template-columns:1fr;}.gene-result-card{padding:1.3rem;}}
+
+/* Let sidebar cards grow with labels instead of clipping TMB. */
+[data-testid="stSidebar"] .st-key-journey_steps [data-testid="stPageLink"] a {
+ height:auto!important; min-height:76px; padding:1rem .65rem; white-space:normal!important;
+}
+[data-testid="stSidebar"] .st-key-journey_steps [data-testid="stPageLink"] a > div {
+ min-width:0; flex-shrink:1;
+}
+[data-testid="stSidebar"] .st-key-journey_steps [data-testid="stMarkdownContainer"],
+[data-testid="stSidebar"] .st-key-journey_steps [data-testid="stMarkdownContainer"] p {
+ white-space:normal!important; overflow:visible!important; text-overflow:clip!important;
+ overflow-wrap:normal; word-break:normal; line-height:1.45!important;
+}
+[data-testid="stSidebar"] .st-key-journey_steps [data-testid="stPageLink"] p {
+ font-size:1rem!important; letter-spacing:.01em;
+}
+.st-key-care_card_centers [data-testid="stLinkButton"] a {min-height:60px;}
+.st-key-care_card_centers [data-testid="stLinkButton"] p {font-weight:800!important;font-size:1.02rem;}
