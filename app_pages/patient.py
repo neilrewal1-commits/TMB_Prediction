@@ -29,29 +29,44 @@ with st.form('portal_care_location_' + str(st.session_state.portal_epoch)):
             patient.update(city=city.strip(), country=country.strip())
             st.session_state.portal_patient = patient
 
-if patient['city'] and patient['country']:
-    location = patient['city'] + ', ' + patient['country']
-    st.subheader('EXPLORE CARE NEAR ' + patient['city'].upper())
-    with st.container(border=True, key='care_card_centers'):
-        st.write('**Find locations, contact details, and directions.**')
-        query = quote_plus('cancer treatment centers near ' + location)
-        st.link_button('OPEN CANCER CENTERS IN GOOGLE MAPS',
-            'https://www.google.com/maps/search/?api=1&query=' + query,
-            icon=':material/map:', type='primary', use_container_width=True)
-        st.caption('Opens Google Maps results for ' + location + '.')
-if not (patient['city'] and patient['country']):
-    st.link_button('OPEN CANCER CENTERS IN GOOGLE MAPS',
-        'https://www.google.com/maps/search/?api=1&query=cancer+treatment+centers+near+Danville+California',
-        icon=':material/map:', type='primary', use_container_width=True)
-
 map_location = (patient['city'] + ', ' + patient['country']) if patient['city'] and patient['country'] else 'Danville, California'
-map_query = quote_plus('cancer treatment centers near ' + map_location)
-st.subheader('MAP PREVIEW · ' + map_location.upper())
-st.caption('Showing cancer care search results near ' + map_location + '.')
-components.iframe(
-    'https://maps.google.com/maps?q=' + map_query + '&output=embed',
-    height=420, scrolling=False)
-st.caption('If the preview does not load, open Google Maps using the button above.')
+search_types = {
+    'ALL CANCER CARE': 'cancer treatment centers',
+    'HOSPITALS': 'hospitals with cancer care',
+    'CANCER SPECIALISTS': 'oncologists',
+    'RADIATION CENTERS': 'radiation oncology centers',
+}
+st.subheader('WHAT KIND OF CARE ARE YOU LOOKING FOR?')
+selected_type = st.segmented_control(
+    'Care type', options=list(search_types), default='ALL CANCER CARE',
+    key='care_facility_type', selection_mode='single', width='stretch')
+search_term = search_types.get(selected_type, search_types['ALL CANCER CARE'])
+map_query = quote_plus(search_term + ' near ' + map_location)
+with st.container(border=True, key='care_card_centers'):
+    st.subheader('EXPLORE CARE · ' + map_location.upper())
+    st.write('**Choose a care type to update the map and directions.**')
+    st.link_button('OPEN RESULTS IN GOOGLE MAPS',
+        'https://www.google.com/maps/search/?api=1&query=' + map_query,
+        icon=':material/map:', type='primary', use_container_width=True)
+    st.caption('Searching for ' + search_term + ' near ' + map_location + '.')
+    components.iframe(
+        'https://maps.google.com/maps?q=' + map_query + '&output=embed',
+        height=420, scrolling=False)
+    st.caption('If the preview does not load, use the Google Maps button above.')
+
+st.subheader('COMPARE CARE OPTIONS')
+st.caption('Danville & East Bay reference guide · Selected examples from official provider websites, checked October 23, 2026. This guide stays fixed while the map follows your search.')
+st.markdown("""
+| Center | Facility type | Cancer services | Organization | Details |
+| :--- | :--- | :--- | :--- | :--- |
+| **Hofmann Cancer Center** · Walnut Creek | Hospital-campus cancer center | Medical oncology, radiation oncology, infusion | John Muir Health nonprofit / UCSF partnership | [Official site](https://www.johnmuirhealth.com/locations/walnut-creek-behring-pavilion) |
+| **Contra Costa Regional Medical Center** · Martinez | Public hospital | Cancer program, clinical trials | Public · County health system | [Official site](https://www.cchealth.org/get-care/medical-center-services/cancer-program) |
+| **UCSF–John Muir Cancer Center** · Berkeley | Outpatient specialty center | Chemotherapy, immunotherapy, radiation therapy | Public university / nonprofit partnership | [Official site](https://www.ucsfhealth.org/locations/cancer-center-berkeley) |
+""")
+st.caption('Ask each center about referrals, insurance and appointment availability. Public or nonprofit status does not determine your cost.')
+with st.expander('About this comparison'):
+    st.markdown('Facility type describes the setting; organization describes the health system. Partnerships are shown as partnerships rather than assigned a single ownership label.')
+    st.markdown('Sources: [John Muir Health nonprofit status](https://www.johnmuirhealth.com/giving/the-foundation.html) · [County hospital](https://www.cchealth.org/get-care/healthcare-locations/contra-costa-regional-medical-center) · [UCSF public university](https://www.ucsf.edu/about). Service details are linked in the table.')
 
 with st.expander(words('Optional · Your details', 'Optional · Patient demographics')):
     with st.form('portal_patient_form_' + str(st.session_state.portal_epoch)):
