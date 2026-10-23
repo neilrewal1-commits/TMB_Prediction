@@ -34,8 +34,9 @@ if navigation.url_path != '':
         st.segmented_control('View', ['Patient', 'Clinician'],
             key='care_audience_picker',
             on_change=change_audience, selection_mode='single', width='stretch', label_visibility='collapsed')
-        st.page_link(pages[0], label='Welcome', icon=pages[0].icon, width='stretch')
-        st.caption('YOUR FOUR STEPS')
+        with st.container(key='sidebar_welcome'):
+            st.page_link(pages[0], label='WELCOME', icon=pages[0].icon, width='stretch')
+        st.html('<div class="sidebar-steps-heading">YOUR FOUR STEPS</div>')
         labels = ['1. GENE REPORT & TMB', '2. RADIOLOGY REPORT', '3. FIND CANCER CARE', '4. FIND SUPPORT']
         with st.container(key='journey_steps'):
             for page, label in zip(pages[1:5], labels):
