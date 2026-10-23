@@ -155,29 +155,29 @@ if report:
         high = state['prediction']['label'].startswith('High')
         result_word = 'HIGH' if high else 'LOW'
         st.html('<section class="gene-result" aria-label="TMB model result"><div class="gene-result-label">TMB MODEL RESULT</div><div class="gene-result-value">' + result_word + '</div><div class="gene-result-sub">Predicted mutation-burden category</div></section>')
-        explanation, questions = st.columns(2, gap='large')
-        with explanation, st.container(border=True, key='care_card_gene_meaning'):
-            st.subheader('WHAT THIS RESULT TELLS YOU')
-            bullets = [
-                'The model predicts a **' + ('HIGH' if high else 'LOW') + ' mutation-burden research category.',
-                'This result comes from patterns across **50 genes**.',
-                'Higher clinically measured TMB can support considering **immunotherapy**.' if high else 'A low result **does not rule out immunotherapy**.',
-                'Other biomarkers and the cancer diagnosis also shape treatment options.',
-                'Bring this result to your doctor to discuss whether clinical biomarker testing would help.'
-            ]
-            for item in bullets:
-                st.markdown('- ' + item)
-        with questions, st.container(border=True, key='care_card_gene_questions'):
-            st.subheader('QUESTIONS FOR YOUR DOCTOR')
-            for item in [
-                'Could immunotherapy be an option for my cancer?',
-                'Would clinical TMB testing help us decide?',
-                'What do my MSI/MMR and PD-L1 results tell us?',
-                'How do these findings fit with my other reports?',
-                'What other treatment options should we discuss?'
-            ]:
-                st.markdown('- ' + item)
-        st.link_button('Learn why TMB matters · National Cancer Institute', 'https://www.cancer.gov/publications/dictionaries/cancer-terms/def/tumor-mutational-burden')
+        bullets = [
+            'The model predicts a **' + ('HIGH' if high else 'LOW') + ' mutation-burden research category.',
+            'This result comes from patterns across **50 genes**.',
+            'Higher clinically measured TMB can support considering **immunotherapy**.' if high else 'A low result **does not rule out immunotherapy**.',
+            'Other biomarkers and the cancer diagnosis also shape treatment options.',
+            'Bring this result to your doctor to discuss whether clinical biomarker testing would help.'
+        ]
+
+        doctor_questions = [
+            'Could immunotherapy be an option for my cancer?',
+            'Would clinical TMB testing help us decide?',
+            'What do my MSI/MMR and PD-L1 results tell us?',
+            'How do these findings fit with my other reports?',
+            'What other treatment options should we discuss?'
+        ]
+        def card_items(items):
+            import re
+            return ''.join('<li>' + re.sub(r'[*][*](.+?)[*][*]', lambda match: '<strong>' + match.group(1) + '</strong>', escape(item)) + '</li>' for item in items)
+        st.html('<div class="gene-results-grid"><section class="gene-result-card"><h3>WHAT THIS RESULT TELLS YOU</h3><ul>'
+                + card_items(bullets) + '</ul></section><section class="gene-result-card gene-doctor-card"><h3>QUESTIONS FOR YOUR DOCTOR</h3><ul>'
+                + card_items(doctor_questions) + '</ul></section></div>')
+        with st.container(key='gene_learn_link'):
+            st.link_button('LEARN WHY TMB MATTERS · NATIONAL CANCER INSTITUTE', 'https://www.cancer.gov/publications/dictionaries/cancer-terms/def/tumor-mutational-burden')
         a, b = st.columns(2)
         a.download_button('Download gene data', features.to_csv(index=False), 'reviewed_gene_features.csv', 'text/csv', icon=':material/download:')
         b.download_button('Download result', json.dumps(state['prediction'], indent=2), 'tmb_research_prediction.json', 'application/json', icon=':material/download:')
