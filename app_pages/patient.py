@@ -6,52 +6,45 @@ from openai import OpenAIError
 
 from care_app.ai import find_centers, setting
 from prototype_core import ROOT
-from care_app.state import clear_patient
-from care_app.ui import api_error, header, status_card, words
+from care_app.ui import api_error, header, words
 
-header('Your care', 'Patient profile')
-patient = st.session_state.portal_patient
-if patient['alias']:
-    a, b, c = st.columns(3)
-    with a:
-        status_card(words('Name', 'Patient alias'), patient['alias'], icon='person')
-    with b:
-        status_card(words('Diagnosis', 'Documented diagnosis'), patient['diagnosis'] or 'Not added', icon='clinical_notes')
-    with c:
-        status_card('Location', ', '.join(filter(None, [patient['city'], patient['country']])) or 'Not added', icon='location_on')
-
-with st.expander(words('Your details', 'Patient demographics'), expanded=not bool(patient['alias'])):
-    with st.form('portal_patient_form_' + str(st.session_state.portal_epoch)):
-        left, right = st.columns(2)
-        alias = left.text_input(words('Preferred name', 'Patient alias'), value=patient['alias'], max_chars=60)
-        age = right.number_input('Age', value=patient['age'], min_value=0, max_value=120, step=1)
-        diagnosis = st.text_input(words('Diagnosis', 'Documented diagnosis'), value=patient['diagnosis'], max_chars=200)
-        left, right = st.columns(2)
-        city = left.text_input('City or postal code', value=patient['city'], max_chars=100)
-        country = right.text_input('Country', value=patient['country'], max_chars=80)
-        if st.form_submit_button('Save details', type='primary', icon=':material/check:'):
-            if not alias.strip():
-                st.error(words('Enter a preferred name.', 'Enter a patient alias.'))
-            else:
-                if patient['alias'] and patient['alias'] != alias.strip():
-                    clear_patient()
-                updated = dict(alias=alias.strip(), age=age, diagnosis=diagnosis.strip(), city=city.strip(), country=country.strip())
-                if (patient['city'], patient['country']) != (updated['city'], updated['country']):
-                    st.session_state.pop('portal_centers', None)
-                    st.session_state.pop('portal_centers_consent', None)
-                st.session_state.portal_patient = updated
-                st.rerun()
+st.caption('STEP 3 OF 4 · FIND CANCER CARE')
+header('Where can I find cancer care?', 'Find Cancer Care')
+st.html('<section class="gene-research"><span class="gene-eyebrow">TAKE THE NEXT STEP</span>'
+        '<h2>You’ve explored your reports.<br>Now find cancer care near you.</h2>'
+        '<p>Enter a city or ZIP code to explore nearby cancer treatment centers.</p></section>')
 
 patient = st.session_state.portal_patient
-with st.container(border=True, key='care_card_centers'):
-    st.subheader(words('Find cancer care', 'Cancer treatment centers'))
-    has_location = bool(patient['city'] and patient['country'])
-    if has_location:
-        query = quote_plus('cancer treatment centers near ' + patient['city'] + ', ' + patient['country'])
-        st.link_button('Find centers on Google Maps', 'https://www.google.com/maps/search/?api=1&query=' + query, icon=':material/map:', type='primary')
-        if setting('OPENAI_API_KEY'):
+with st.form('portal_care_location_' + str(st.session_state.portal_epoch)):
+    st.subheader('FIND CARE NEAR YOU')
+    left, right = st.columns([1.4, 1])
+    city = left.text_input('City or ZIP / postal code', value=patient['city'], placeholder='e.g., 94526 or Danville', max_chars=100)
+    country = right.text_input('Country', value=patient['country'] or 'United States', max_chars=80)
+    submitted = st.form_submit_button('FIND CANCER CARE', type='primary', use_container_width=True)
+    if submitted:
+        if not city.strip() or not country.strip():
+            st.error('Enter a city or postal code and country.')
+        else:
+            if (patient['city'], patient['country']) != (city.strip(), country.strip()):
+                st.session_state.pop('portal_centers', None)
+                st.session_state.pop('portal_centers_consent', None)
+            patient.update(city=city.strip(), country=country.strip())
+            st.session_state.portal_patient = patient
+
+if patient['city'] and patient['country']:
+    location = patient['city'] + ', ' + patient['country']
+    st.subheader('EXPLORE CARE NEAR ' + patient['city'].upper())
+    with st.container(border=True, key='care_card_centers'):
+        st.write('**Find locations, contact details, and directions.**')
+        query = quote_plus('cancer treatment centers near ' + location)
+        st.link_button('OPEN CANCER CENTERS IN GOOGLE MAPS',
+            'https://www.google.com/maps/search/?api=1&query=' + query,
+            icon=':material/map:', type='primary', use_container_width=True)
+        st.caption('Opens Google Maps results for ' + location + '.')
+    if setting('OPENAI_API_KEY'):
+        with st.expander('SEARCH CENTER DETAILS'):
             search_consent = st.checkbox('Allow OpenAI to search using this location.', key='portal_centers_consent')
-            if st.button('Search center details', disabled=not search_consent, icon=':material/search:'):
+            if st.button('SEARCH CENTER DETAILS', disabled=not search_consent, icon=':material/search:'):
                 st.session_state.pop('portal_centers', None)
                 try:
                     with st.spinner('Finding centers…'):
@@ -60,15 +53,27 @@ with st.container(border=True, key='care_card_centers'):
                         st.session_state.portal_centers = result
                 except (OpenAIError, ValueError) as exc:
                     api_error(exc)
-    else:
-        st.write('Save your city and country to find nearby centers.')
 
 centers = st.session_state.get('portal_centers')
 if centers:
-    st.subheader('Nearby centers')
+    st.subheader('NEARBY CENTERS')
     st.markdown(centers['text'])
     with st.expander('Sources'):
         st.caption(centers['location'] + ' · ' + centers['searched_at'][:10])
         for source in centers['sources']:
             st.link_button(source['title'] or 'Official source', source['url'])
-st.page_link(str(ROOT / 'app_pages/community.py'), label='Find support', icon=':material/arrow_forward:')
+
+with st.expander(words('Optional · Your details', 'Optional · Patient demographics')):
+    with st.form('portal_patient_form_' + str(st.session_state.portal_epoch)):
+        left, right = st.columns(2)
+        alias = left.text_input(words('Preferred name', 'Patient alias'), value=patient['alias'], max_chars=60)
+        age = right.number_input('Age', value=patient['age'], min_value=0, max_value=120, step=1)
+        diagnosis = st.text_input(words('Diagnosis', 'Documented diagnosis'), value=patient['diagnosis'], max_chars=200)
+        if st.form_submit_button('SAVE OPTIONAL DETAILS', icon=':material/check:'):
+            patient.update(alias=alias.strip(), age=age, diagnosis=diagnosis.strip())
+            st.session_state.portal_patient = patient
+            st.success('Your details are saved.')
+
+st.divider()
+if st.button('CONTINUE TO FIND SUPPORT →', use_container_width=True):
+    st.switch_page(str(ROOT / 'app_pages/community.py'))
