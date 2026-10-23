@@ -49,4 +49,10 @@ if navigation.url_path != '':
         name = patient['alias'] or 'My workspace'
         st.html('<div class="care-session"><span class="care-avatar">' + escape(name[0].upper()) + '</span>' + escape(name) + '</div>')
         st.button('Clear workspace', key='portal_clear', on_click=clear_patient, icon=':material/restart_alt:')
+# Start the community page with choices only on each new visit.
+if st.session_state.get('support_last_page') != navigation.url_path:
+    if navigation.url_path == 'community':
+        st.session_state.support_section = None
+        st.session_state.pop('support_next_action', None)
+    st.session_state.support_last_page = navigation.url_path
 navigation.run()
