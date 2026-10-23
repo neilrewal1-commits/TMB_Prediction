@@ -36,9 +36,10 @@ if navigation.url_path != '':
             on_change=change_audience, selection_mode='single', width='stretch', label_visibility='collapsed')
         st.page_link(pages[0], label='Welcome', icon=pages[0].icon, width='stretch')
         st.caption('YOUR FOUR STEPS')
-        labels = ['1. Gene Report & TMB', '2. Radiology Report', '3. Find Cancer Care', '4. Find Support']
-        for page, label in zip(pages[1:5], labels):
-            st.page_link(page, label=label, icon=page.icon, width='stretch')
+        labels = ['1. GENE REPORT & TMB', '2. RADIOLOGY REPORT', '3. FIND CANCER CARE', '4. FIND SUPPORT']
+        with st.container(key='journey_steps'):
+            for page, label in zip(pages[1:5], labels):
+                st.page_link(page, label=label, icon=page.icon, width='stretch')
         st.divider()
         st.page_link(pages[5], label='Cancer Basics', icon=pages[5].icon, width='stretch')
         st.page_link(pages[6], label='My Research & Sources', icon=pages[6].icon, width='stretch')
