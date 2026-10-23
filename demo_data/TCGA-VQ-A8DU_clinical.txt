@@ -1,0 +1,9 @@
+RECONSTRUCTED RESEARCH SUMMARY — NOT AN ORIGINAL MEDICAL REPORT
+Case ID: TCGA-VQ-A8DU
+Source: TCIA clinical snapshot and GDC metadata, retrieved October 8, 2026.
+Documented diagnosis: Stomach, Intestinal Adenocarcinoma, Tubular Type
+Recorded pathological stage: Stage IIIA
+Staging edition: AJCC 7th edition (historical)
+Age: 63 years
+The stage is recorded after pathological assessment. The app did not infer it.
+Original collection: https://www.cancerimagingarchive.net/collection/tcga-stad/

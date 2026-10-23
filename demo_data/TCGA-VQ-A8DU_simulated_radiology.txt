@@ -1,0 +1,4 @@
+SIMULATED EXTENSION — FICTIONAL RADIOLOGY REPORT
+Case ID: TCGA-VQ-A8DU
+Imaging findings: Illustrative scan description: a regional lymph node is described as indeterminate. The finding does not establish confirmed spread.
+These words are invented for interface testing and are not findings from this research patient.
