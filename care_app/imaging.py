@@ -9,8 +9,8 @@ from care_app.ui import auto_analyze, clinician, header, patient_explanation
 from prototype_core import ROOT
 
 
-def imaging_input():
-    st.caption('PDFs and images are sent to OpenAI automatically for one combined review. '
+def imaging_input(auto_send=True):
+    st.caption(('PDFs and images are sent to OpenAI automatically for one combined review. ' if auto_send else 'Click EXPLAIN MY REPORT to send these files to OpenAI for review. ') +
                'Remove names and identifying details before uploading.')
     st.caption('Up to 10 files · 10 MB each · 30 MB total · 30 pages per PDF · 60 pages/images total')
     revision = st.session_state.get('portal_imaging_revision', 0)
