@@ -1,4 +1,5 @@
 import json
+from html import escape
 
 import pandas as pd
 import streamlit as st
@@ -9,6 +10,15 @@ from care_app.state import fingerprint
 from care_app.ui import auto_analyze, clinician, header, image_input, patient_explanation, status_card, words
 from prototype_core import GENES, ROOT, genomic_csv
 
+st.html("""<style>
+.gene-change-strip{padding:1rem 1.25rem;border:1px solid #72b9aa;border-radius:14px;background:#edf9f4;margin:.3rem 0 1rem;}
+.gene-change-strip strong{display:block;color:#155a4b;margin-bottom:.6rem;}
+.gene-change-chip{display:inline-block;padding:.4rem .8rem;margin:.2rem .35rem .2rem 0;border-radius:8px;background:#c8f0dd;color:#124b3d;font-weight:800;font-size:1.05rem;border:1px solid #55a98a;}
+.gene-result{text-align:center;padding:1.8rem 1rem 2rem;margin:1rem 0;border-radius:20px;background:#edf5fa;border:1px solid #b7cddd;}
+.gene-result-label{font-size:.95rem;letter-spacing:.12em;font-weight:750;color:#365b70;}
+.gene-result-value{font-size:clamp(3.5rem,8vw,5.5rem);font-weight:850;line-height:1.2;color:#123e56;margin:.35rem 0;}
+.gene-result-sub{font-size:1.1rem;color:#365b70;}
+</style>""")
 st.caption('STEP 1 OF 4 · GENE REPORT & TMB')
 header('My research. Your starting point.', 'Gene Report & TMB · Research model')
 st.html("""<section class="gene-research">
@@ -25,6 +35,7 @@ with st.expander('How the research works'):
     st.write('**Data:** I used cBioPortal / TCGA stomach-cancer data: 344 training samples and 87 test samples.')
     st.write('**Model:** A Random Forest uses mutation patterns across 50 genes to predict a high or low research category.')
     st.write('**Demo:** These two examples come from my original test dataset. Run the model to compare its prediction with the recorded label.')
+    st.caption('High and low are research categories, not clinical TMB measurements. Sample A: original test row 1, recorded Low; Sample B: original test row 2, recorded High.')
     st.page_link(str(ROOT / 'app_pages/about_research.py'), label='MY RESEARCH & SOURCES', icon=':material/science:')
 st.html('<h2 class="gene-action-title">TRY THE RESEARCH IN ACTION</h2>')
 mode = st.segmented_control('Choose your input', ['TRY A SAMPLE', 'UPLOAD GENE CSV', 'UPLOAD REPORT IMAGE'], default='TRY A SAMPLE', key='portal_gene_input_mode', selection_mode='single', width='stretch')
@@ -95,8 +106,12 @@ if report:
     display = frame.copy()
     if not clinician():
         display['status'] = display['status'].map(status_labels)
+    def highlight_mutations(row):
+        changed = row['status'] in ('Mutated', 'Change found')
+        return ['background-color: #c8f0dd; color: #124b3d; font-weight: bold' if changed else '' for _ in row]
+    styled_display = display.style.apply(highlight_mutations, axis=1)
     with st.expander(words('Check the 50 genes', '50-gene feature review'), expanded=clinician()):
-        edited = st.data_editor(display, hide_index=True, disabled=True if mode == 'TRY A SAMPLE' else ['gene'], width='stretch',
+        edited = st.data_editor(styled_display, hide_index=True, disabled=True if mode == 'TRY A SAMPLE' else ['gene'], width='stretch',
             key='portal_gene_editor_' + state['digest'] + '_' + str(st.session_state.get('portal_gene_revision', 0)) + '_' + str(clinician()),
             column_config={'gene': st.column_config.TextColumn('Gene'),
                            'status': st.column_config.SelectboxColumn('Status', options=STATUSES if clinician() else [status_labels[s] for s in STATUSES], required=True),
@@ -110,6 +125,10 @@ if report:
         st.session_state.portal_gene_rows = rows
     else:
         state['rows'] = rows
+    changed_genes = [r['gene'] for r in rows if r['status'] == 'Mutated']
+    if changed_genes:
+        chips = ''.join('<span class="gene-change-chip">' + escape(gene) + '</span>' for gene in changed_genes)
+        st.html('<div class="gene-change-strip"><strong>GENE CHANGES FOUND · ' + str(len(changed_genes)) + ' OF 50</strong>' + chips + '</div>')
     reviewed_id = fingerprint(rows)
     if state.get('reviewed_id') != reviewed_id:
         state['prediction'] = None
@@ -133,12 +152,9 @@ if report:
         except (ValueError, OSError) as exc:
             st.error('The model could not run: ' + str(exc))
     if state['prediction']:
-        status_card(words('TMB model category', 'TMB study classification'), state['prediction']['label'].replace(' study category', ''), icon='genetics')
         high = state['prediction']['label'].startswith('High')
-        if mode == 'TRY A SAMPLE':
-            metadata = json.loads((ROOT / 'demo_data/neil_test_samples.json').read_text())[case_id]
-            st.caption('Recorded research label: ' + metadata['research_label'] + ' · Original test dataset, row ' + str(metadata['source_data_row']))
-        st.caption('Model output: research category, not a clinical TMB measurement.')
+        result_word = 'HIGH' if high else 'LOW'
+        st.html('<section class="gene-result" aria-label="TMB model result"><div class="gene-result-label">TMB MODEL RESULT</div><div class="gene-result-value">' + result_word + '</div><div class="gene-result-sub">Predicted mutation-burden category</div></section>')
         explanation, questions = st.columns(2, gap='large')
         with explanation, st.container(border=True, key='care_card_gene_meaning'):
             st.subheader('WHAT THIS RESULT TELLS YOU')
