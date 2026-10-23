@@ -27,3 +27,7 @@
 .st-key-welcome_patient button p,.st-key-welcome_clinician button p{font-size:1.16rem!important;font-weight:750!important;letter-spacing:.045em;}
 @media(max-width:850px){.welcome-dna{width:205px;right:.5rem;top:2rem;}.welcome-eyebrow,.welcome-hero h1,.welcome-lead{max-width:calc(100% - 185px);}}
 @media(max-width:600px){.welcome-dna{width:135px;right:-.5rem;top:.8rem;opacity:.45;}.welcome-eyebrow,.welcome-hero h1,.welcome-lead{max-width:100%;}.welcome-hero h1{padding-right:60px;}.welcome-story p{font-size:1.05rem;}.st-key-welcome_patient button p,.st-key-welcome_clinician button p{font-size:1rem!important;}}
+
+.welcome-dna{width:290px;top:1.2rem;right:1.5rem;}.welcome-dna img{box-shadow:0 12px 40px #031e3033;}
+@media(max-width:850px){.welcome-dna{width:195px;top:2rem;right:.7rem;}}
+@media(max-width:600px){.welcome-dna{position:relative;float:right;width:120px;top:auto;right:auto;margin:0 0 .75rem .75rem;opacity:1;}.welcome-hero h1{padding-right:0;}.welcome-questions{clear:both;}}
