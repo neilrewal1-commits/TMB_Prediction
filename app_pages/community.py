@@ -35,7 +35,7 @@ st.html("""<style>
 }
 </style>""")
 
-st.session_state.setdefault('support_section', 'CONNECT WITH OTHERS')
+st.session_state.setdefault('support_section', None)
 choices = [
     ('CONNECT WITH OTHERS', 'A shared experience', 'Explore connections with patients, caregivers and families.', ':material/groups:'),
     ('FIND SUPPORT', 'Someone to talk to', 'Find a support group or speak with a community navigator.', ':material/support_agent:'),
@@ -114,7 +114,7 @@ elif section == 'FIND SUPPORT':
         st.subheader('Looking for professional emotional support?')
         st.write('Ask your care team or a navigator to help you find an oncology social worker, counselor, psychologist or psychiatrist. Peer groups offer connection; professional care offers individual support.')
 
-else:
+elif section == 'UNDERSTAND RESULTS':
     st.subheader('UNDERSTAND MORE. ASK WITH CONFIDENCE.')
     st.write('Use these National Cancer Institute resources to understand terms from your reports and prepare for a conversation with your care team.')
     left, right = st.columns(2)
