@@ -19,26 +19,27 @@ st.html("""<section class="gene-research">
 <div class="gene-stats"><div><strong>183,107</strong><span>mutation records</span></div>
 <div><strong>431</strong><span>tumor samples</span></div>
 <div><strong>50</strong><span>gene features</span></div></div>
-<p class="gene-relevance">Why TMB? It is one clue doctors can use when considering immunotherapy.</p>
+<p class="gene-relevance"><strong>Why TMB? Understanding tumor mutation burden can help doctors explore treatment options—including whether to consider immunotherapy.</strong></p>
 </section>""")
 with st.expander('How the research works'):
-    st.write('Source: cBioPortal / TCGA stomach adenocarcinoma data. Each gene is represented by a mutation-present or mutation-absent feature. The app runs the saved 50-tree Random Forest model.')
-    st.write('The labels are study-defined high and low mutation-burden groups, not measured clinical TMB in mutations/Mb. These public cases demonstrate the model; they are not an independent validation set.')
+    st.write('**Data:** I used cBioPortal / TCGA stomach-cancer data: 344 training samples and 87 test samples.')
+    st.write('**Model:** A Random Forest uses mutation patterns across 50 genes to predict a high or low research category.')
+    st.write('**Demo:** These two examples come from my original test dataset. Run the model to compare its prediction with the recorded label.')
     st.page_link(str(ROOT / 'app_pages/about_research.py'), label='MY RESEARCH & SOURCES', icon=':material/science:')
-st.subheader('Try the research in action')
-mode = st.radio('Choose your input', ['TRY A SAMPLE', 'UPLOAD GENE CSV', 'UPLOAD REPORT IMAGE'], horizontal=True, key='portal_gene_input_mode')
+st.html('<h2 class="gene-action-title">TRY THE RESEARCH IN ACTION</h2>')
+mode = st.segmented_control('Choose your input', ['TRY A SAMPLE', 'UPLOAD GENE CSV', 'UPLOAD REPORT IMAGE'], default='TRY A SAMPLE', key='portal_gene_input_mode', selection_mode='single', width='stretch')
 source = None
 report = None
 state = None
 if mode == 'TRY A SAMPLE':
-    st.caption('Real public research data · Choose a case, then run the model.')
+    st.caption('FROM MY RESEARCH DATASET · Choose a sample, then run my model.')
     a, b = st.columns(2)
     if a.button('LOAD SAMPLE A', use_container_width=True, key='gene_sample_a'):
-        st.session_state.portal_gene_sample = 'TCGA-VQ-A8DL'
+        st.session_state.portal_gene_sample = 'Neil_Test_Sample_A'
     if b.button('LOAD SAMPLE B', use_container_width=True, key='gene_sample_b'):
-        st.session_state.portal_gene_sample = 'TCGA-VQ-A8DU'
+        st.session_state.portal_gene_sample = 'Neil_Test_Sample_B'
     case_id = st.session_state.get('portal_gene_sample')
-    if case_id:
+    if case_id in ('Neil_Test_Sample_A', 'Neil_Test_Sample_B'):
         path = ROOT / 'demo_data' / (case_id + '_genes.csv')
         source = {'name': path.name, 'bytes': path.read_bytes()}
         st.success('Sample ready: ' + case_id)
@@ -95,7 +96,7 @@ if report:
     if not clinician():
         display['status'] = display['status'].map(status_labels)
     with st.expander(words('Check the 50 genes', '50-gene feature review'), expanded=clinician()):
-        edited = st.data_editor(display, hide_index=True, disabled=['gene'], width='stretch',
+        edited = st.data_editor(display, hide_index=True, disabled=True if mode == 'TRY A SAMPLE' else ['gene'], width='stretch',
             key='portal_gene_editor_' + state['digest'] + '_' + str(st.session_state.get('portal_gene_revision', 0)) + '_' + str(clinician()),
             column_config={'gene': st.column_config.TextColumn('Gene'),
                            'status': st.column_config.SelectboxColumn('Status', options=STATUSES if clinician() else [status_labels[s] for s in STATUSES], required=True),
@@ -125,7 +126,7 @@ if report:
                 st.write(', '.join(unknown))
     confirmed = mode == 'TRY A SAMPLE' or st.checkbox(words('I checked all 50 genes against their sources.', 'I verified all 50 gene statuses and source evidence.'),
                             key='portal_gene_confirm_' + reviewed_id)
-    if st.button('RUN TMB MODEL', type='primary', disabled=not (ready and confirmed)):
+    if st.button('RUN TMB MODEL', key='gene_run_model', use_container_width=True, type='primary', disabled=not (ready and confirmed)):
         try:
             state['prediction'] = predict(rows)
             state['prediction']['source'] = source['name']
@@ -134,12 +135,32 @@ if report:
     if state['prediction']:
         status_card(words('TMB model category', 'TMB study classification'), state['prediction']['label'].replace(' study category', ''), icon='genetics')
         high = state['prediction']['label'].startswith('High')
-        st.subheader('What does this result tell us?')
-        st.write('This gene pattern was classified in the ' + ('higher' if high else 'lower') + ' mutation-burden group defined in Neil’s study.')
-        st.write('In clinical testing, higher TMB can support considering immunotherapy. This research prediction is a reason to discuss confirmatory biomarker testing—not a treatment recommendation.' if high else 'A low research result does not rule out immunotherapy. Doctors also consider other biomarkers and the overall cancer diagnosis.')
-        with st.expander('Questions to ask your doctor', expanded=True):
-            st.write('• Would clinical TMB testing help clarify my options?')
-            st.write('• What do my other biomarkers, such as MSI/MMR and PD-L1, tell us?')
+        if mode == 'TRY A SAMPLE':
+            metadata = json.loads((ROOT / 'demo_data/neil_test_samples.json').read_text())[case_id]
+            st.caption('Recorded research label: ' + metadata['research_label'] + ' · Original test dataset, row ' + str(metadata['source_data_row']))
+        st.caption('Model output: research category, not a clinical TMB measurement.')
+        explanation, questions = st.columns(2, gap='large')
+        with explanation, st.container(border=True, key='care_card_gene_meaning'):
+            st.subheader('WHAT THIS RESULT TELLS YOU')
+            bullets = [
+                'The model predicts a **' + ('HIGH' if high else 'LOW') + ' mutation-burden research category.',
+                'This result comes from patterns across **50 genes**.',
+                'Higher clinically measured TMB can support considering **immunotherapy**.' if high else 'A low result **does not rule out immunotherapy**.',
+                'Other biomarkers and the cancer diagnosis also shape treatment options.',
+                'Bring this result to your doctor to discuss whether clinical biomarker testing would help.'
+            ]
+            for item in bullets:
+                st.markdown('- ' + item)
+        with questions, st.container(border=True, key='care_card_gene_questions'):
+            st.subheader('QUESTIONS FOR YOUR DOCTOR')
+            for item in [
+                'Could immunotherapy be an option for my cancer?',
+                'Would clinical TMB testing help us decide?',
+                'What do my MSI/MMR and PD-L1 results tell us?',
+                'How do these findings fit with my other reports?',
+                'What other treatment options should we discuss?'
+            ]:
+                st.markdown('- ' + item)
         st.link_button('Learn why TMB matters · National Cancer Institute', 'https://www.cancer.gov/publications/dictionaries/cancer-terms/def/tumor-mutational-burden')
         a, b = st.columns(2)
         a.download_button('Download gene data', features.to_csv(index=False), 'reviewed_gene_features.csv', 'text/csv', icon=':material/download:')

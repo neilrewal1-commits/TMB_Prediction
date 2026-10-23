@@ -1,0 +1,14 @@
+{
+  "Neil_Test_Sample_A": {
+    "source": "Neil original test.csv",
+    "source_data_row": 1,
+    "source_sha256": "4b7e857ed0a95c2eda23104460df0e0499fb637479333abf67bdd911f52e6184",
+    "research_label": "Low"
+  },
+  "Neil_Test_Sample_B": {
+    "source": "Neil original test.csv",
+    "source_data_row": 2,
+    "source_sha256": "4b7e857ed0a95c2eda23104460df0e0499fb637479333abf67bdd911f52e6184",
+    "research_label": "High"
+  }
+}

@@ -84,3 +84,16 @@ hr { border-color: var(--care-border); margin: .7rem 0; }
 .gene-stats span {display:block;font-size:.9rem;margin-top:.2rem;}
 .gene-relevance {font-weight:600;margin-bottom:0;}
 @media(max-width:600px){.gene-research{padding:1.4rem;}.gene-stats{gap:.5rem;}.gene-stats>div{padding:.65rem;}.gene-stats strong{font-size:1.35rem;}.gene-stats span{font-size:.8rem;}}
+
+/* Larger navigation and demo controls, paired result cards. */
+[data-testid="stSidebar"] [data-testid="stPageLink"] p {font-size:1.02rem!important;font-weight:750!important;line-height:1.4;}
+.st-key-journey_steps [data-testid="stPageLink"] a {min-height:76px;}
+.gene-research .gene-relevance {font-size:1.22rem;font-weight:750;color:#fff;line-height:1.65;}
+.gene-action-title {font-size:1.65rem!important;font-weight:800!important;}
+.st-key-portal_gene_input_mode button {min-height:58px;}
+.st-key-portal_gene_input_mode button p {font-size:1.05rem!important;font-weight:750!important;}
+.st-key-gene_sample_a button,.st-key-gene_sample_b button,.st-key-gene_run_model button {min-height:65px;border:2px solid #087f78;}
+.st-key-gene_sample_a button p,.st-key-gene_sample_b button p,.st-key-gene_run_model button p {font-size:1.15rem!important;font-weight:800!important;letter-spacing:.035em;}
+.st-key-care_card_gene_meaning,.st-key-care_card_gene_questions {height:100%;border-top:5px solid #087f78!important;}
+.st-key-care_card_gene_questions {border-top-color:#285e88!important;}
+.st-key-care_card_gene_meaning li,.st-key-care_card_gene_questions li {font-size:1.05rem;line-height:1.65;margin-bottom:.8rem;}
